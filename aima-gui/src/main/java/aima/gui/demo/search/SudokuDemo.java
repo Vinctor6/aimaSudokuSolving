@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Properties;
 
 import aima.core.agent.Action;
+import aima.core.agent.State;
 import aima.core.environment.eightpuzzle.EightPuzzleBoard;
 import aima.core.environment.eightpuzzle.EightPuzzleFunctionFactory;
 import aima.core.environment.eightpuzzle.EightPuzzleGoalTest;
@@ -34,6 +35,7 @@ public class SudokuDemo {
 	public static void main(String[] args) {
 		String filename = askForFilename();
 		loadGrids(filename);
+		
 		for (SudokuBoard sudoku : sudokus){
 			System.out.println(sudoku + "\n\n\n");
 		}
@@ -104,10 +106,10 @@ public class SudokuDemo {
 		SudokuDemo.sudokus = sudokus;
 	}
 	
-	private static void sudokuDFSDemo() {
-		/*System.out.println("\nSudokuDemo DFS (9) -->");
-		try {
-			Problem problem = new Problem(easy, EightPuzzleFunctionFactory
+	private static void sudokuDFSDemo(State initialState) {
+		System.out.println("\nSudokuDemo DFS (9) -->");
+		/*try {
+			Problem problem = new Problem(initialState, EightPuzzleFunctionFactory
 					.getActionsFunction(), EightPuzzleFunctionFactory
 					.getResultFunction(), new EightPuzzleGoalTest());
 			Search search = new DepthLimitedSearch(9);

@@ -21,6 +21,45 @@ public class SudokuBoard {
 			this.size = (int) Math.sqrt(state.length);
 		}
 	
+		public int getNumberOfEmptyCase(){
+			int counter = 0;
+			for (int i=0; i < state.length; i++){
+				if (state[i] == 0) counter++;
+			}
+			return counter;
+		}
+		
+		public int getValueAt(XYLocation loc) {
+			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
+		}
+		
+		public boolean isAllConstraintsSatisfied(){
+			for (int row=0; row < size; row++){
+				for (int col=0; col < size; col++){
+					if (!isConstraintSatisfiedFor(new XYLocation(col, row))) return false;
+				}
+			}
+			return true;
+		}
+		
+		public boolean isConstraintSatisfiedFor(XYLocation loc){
+			int indexLoc = getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate());
+			if (state[indexLoc] == 0) return false;
+			
+			for (int i=0; i < state.length; i++){
+				if (state[i] == state[indexLoc] && i != indexLoc){
+					// Vérification de la contrainte sur la ligne
+					if (i >= (loc.getYCoOrdinate())*size && i < loc.getYCoOrdinate()*size+size) return false;
+					// Vérification de la contrainte sur la colonne
+					else if (i%size == loc.getXCoOrdinate()%size) return false;
+					// Vérification de la contrainte dans la zone
+					else if ((i%size)/(int)Math.sqrt(size) == loc.getXCoOrdinate()/(int)Math.sqrt(size)
+							&& (i/size)/(int)Math.sqrt(size) == loc.getYCoOrdinate()/(int)Math.sqrt(size)) return false;
+				}
+			}
+			return true;
+		}
+		
 		@Override
 		public String toString() {
 			String retVal = "";
@@ -54,26 +93,12 @@ public class SudokuBoard {
 		}
 
 		private int getAbsPosition(int x, int y) {
-			return x * 3 + y;
+			return y*size + x;
 		}
 
 		private int getValueAt(int x, int y) {
 			// refactor this use either case or a div/mod soln
 			return state[getAbsPosition(x, y)];
-		}
-
-		private int getGapPosition() {
-			return getPositionOf(0);
-		}
-
-		private int getPositionOf(int val) {
-			int retVal = -1;
-			for (int i = 0; i < 9; i++) {
-				if (state[i] == val) {
-					retVal = i;
-				}
-			}
-			return retVal;
 		}
 
 		private void setValue(int x, int y, int val) {
