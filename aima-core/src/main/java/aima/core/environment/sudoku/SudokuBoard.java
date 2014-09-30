@@ -38,6 +38,11 @@ public class SudokuBoard {
 			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
 		
+		public boolean isFilled(){
+			if (this.getNumberOfEmptyCase() == 0) return true;
+			else return false;
+		}
+		
 		public int getNumberOfEmptyCase(){
 			int counter = 0;
 			for (int i=0; i < state.length; i++){
