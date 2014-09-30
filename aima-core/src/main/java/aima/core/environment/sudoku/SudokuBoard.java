@@ -16,7 +16,8 @@ public class SudokuBoard {
 		private int size;
 		
 		public SudokuBoard(int[] state) {
-			this.state = state;
+			this.state = new int[state.length];
+			System.arraycopy(state, 0, this.state, 0, state.length);
 			this.size = (int) Math.sqrt(state.length);
 		}
 	
