@@ -6,7 +6,6 @@ import java.lang.Math;
 
 import aima.core.agent.Action;
 import aima.core.agent.impl.DynamicAction;
-import aima.core.environment.eightpuzzle.EightPuzzleBoard;
 import aima.core.util.datastructure.XYLocation;
 
 public class SudokuBoard {
@@ -48,11 +47,11 @@ public class SudokuBoard {
 			
 			for (int i=0; i < state.length; i++){
 				if (state[i] == state[indexLoc] && i != indexLoc){
-					// Vérification de la contrainte sur la ligne
+					// VÃ©rification de la contrainte sur la ligne
 					if (i >= (loc.getYCoOrdinate())*size && i < loc.getYCoOrdinate()*size+size) return false;
-					// Vérification de la contrainte sur la colonne
+					// VÃ©rification de la contrainte sur la colonne
 					else if (i%size == loc.getXCoOrdinate()%size) return false;
-					// Vérification de la contrainte dans la zone
+					// VÃ©rification de la contrainte dans la zone
 					else if ((i%size)/(int)Math.sqrt(size) == loc.getXCoOrdinate()/(int)Math.sqrt(size)
 							&& (i/size)/(int)Math.sqrt(size) == loc.getYCoOrdinate()/(int)Math.sqrt(size)) return false;
 				}
