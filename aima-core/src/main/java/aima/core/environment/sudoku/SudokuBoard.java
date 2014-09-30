@@ -14,7 +14,8 @@ public class SudokuBoard {
 		public static Action FILL = new DynamicAction("Fill");
 		public static Action ERASE = new DynamicAction("Erase");
 		private int[] state;
-		private int size;
+		private int tabSize;
+		private int cellSize;
 		
 		//
 		// PUBLIC METHODS
@@ -23,7 +24,8 @@ public class SudokuBoard {
 		public SudokuBoard(int[] state) {
 			this.state = new int[state.length];
 			System.arraycopy(state, 0, this.state, 0, state.length);
-			this.size = (int) Math.sqrt(state.length);
+			this.tabSize = (int) Math.sqrt(state.length);
+			this.cellSize = (int) Math.sqrt(tabSize);
 		}
 
 		public SudokuBoard(SudokuBoard copyBoard) {
@@ -52,8 +54,8 @@ public class SudokuBoard {
 		}
 		
 		public boolean isAllConstraintsSatisfied(){
-			for (int row=0; row < size; row++){
-				for (int col=0; col < size; col++){
+			for (int row=0; row < tabSize; row++){
+				for (int col=0; col < tabSize; col++){
 					if (!isConstraintSatisfiedFor(new XYLocation(col, row))) return false;
 				}
 			}
@@ -71,8 +73,8 @@ public class SudokuBoard {
 					// Vérification de la contrainte sur la colonne
 					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
 					// Vérification de la contrainte dans la zone
-					else if ((i%size)/(int)Math.sqrt(size) == loc.getXCoOrdinate()/(int)Math.sqrt(size)
-							&& (i/size)/(int)Math.sqrt(size) == loc.getYCoOrdinate()/(int)Math.sqrt(size)) return false;
+					else if ((i%tabSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
+							&& (i/tabSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
 				}
 			}
 			return true;
@@ -82,10 +84,10 @@ public class SudokuBoard {
 		public String toString() {
 			String retVal = "";
 			for (int i = 0; i < state.length;i++){
-				if ((i+1)%size == 0) retVal += state[i] + "\n";
+				if ((i+1)%tabSize == 0) retVal += state[i] + "\n";
 				else retVal += state[i] + " ";
-				if(((i+1)%size)%Math.sqrt(size) == 0 && (i+1)%size != 0) retVal += " ";
-				if ((i+1)%(Math.sqrt(size)*size) == 0) retVal += "\n";
+				if(((i+1)%tabSize)%cellSize == 0 && (i+1)%tabSize != 0) retVal += " ";
+				if ((i+1)%(cellSize*tabSize) == 0) retVal += "\n";
 			}
 			return retVal;
 		}
@@ -99,7 +101,7 @@ public class SudokuBoard {
 		 * vertical direction).
 		 */
 		private int getXCoord(int absPos) {
-			return absPos%size;
+			return absPos%tabSize;
 		}
 
 		/**
@@ -107,11 +109,11 @@ public class SudokuBoard {
 		 * in horizontal direction).
 		 */
 		private int getYCoord(int absPos) {
-			return (absPos/size)%size;
+			return (absPos/tabSize)%tabSize;
 		}
 
 		private int getAbsPosition(int x, int y) {
-			return y*size + x;
+			return y*tabSize + x;
 		}
 
 		private int getValueAt(int x, int y) {
