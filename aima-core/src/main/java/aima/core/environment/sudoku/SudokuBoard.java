@@ -67,9 +67,9 @@ public class SudokuBoard {
 			for (int i=0; i < state.length; i++){
 				if (state[i] == state[indexLoc] && i != indexLoc){
 					// Vérification de la contrainte sur la ligne
-					if (i >= (loc.getYCoOrdinate())*size && i < loc.getYCoOrdinate()*size+size) return false;
+					if (getYCoord(i) == loc.getYCoOrdinate()) return false;
 					// Vérification de la contrainte sur la colonne
-					else if (i%size == loc.getXCoOrdinate()%size) return false;
+					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
 					// Vérification de la contrainte dans la zone
 					else if ((i%size)/(int)Math.sqrt(size) == loc.getXCoOrdinate()/(int)Math.sqrt(size)
 							&& (i/size)/(int)Math.sqrt(size) == loc.getYCoOrdinate()/(int)Math.sqrt(size)) return false;
@@ -99,7 +99,7 @@ public class SudokuBoard {
 		 * vertical direction).
 		 */
 		private int getXCoord(int absPos) {
-			return absPos / 3;
+			return absPos%size;
 		}
 
 		/**
@@ -107,7 +107,7 @@ public class SudokuBoard {
 		 * in horizontal direction).
 		 */
 		private int getYCoord(int absPos) {
-			return absPos % 3;
+			return (absPos/size)%size;
 		}
 
 		private int getAbsPosition(int x, int y) {
