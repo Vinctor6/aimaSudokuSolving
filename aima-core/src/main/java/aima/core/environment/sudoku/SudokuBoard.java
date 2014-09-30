@@ -11,8 +11,8 @@ import aima.core.util.datastructure.XYLocation;
 
 public class SudokuBoard {
 
-		public static Action FILL = new DynamicAction("Fill");
-		public static Action ERASE = new DynamicAction("Erase");
+		public static Action FILL = new DynamicAction("Fill"); //not precise enough, how should we do?
+		public static Action ERASE = new DynamicAction("Erase"); //do we need that?
 		private int[] state;
 		private int tabSize;
 		private int cellSize;
