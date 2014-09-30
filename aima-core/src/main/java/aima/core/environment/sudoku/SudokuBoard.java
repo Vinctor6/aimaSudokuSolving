@@ -40,6 +40,24 @@ public class SudokuBoard {
 			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
 		
+		public boolean canAddNumber(int val, XYLocation loc){
+			if(val < 1 || val > 9) return false;
+			
+			int indexLoc = getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate());	
+			for (int i=0; i < state.length; i++){
+				if (state[i] == val && i != indexLoc){
+					//Test line
+					if (getYCoord(i) == loc.getYCoOrdinate()) return false;
+					//Test column
+					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
+					//Test cell
+					else if ((i%tabSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
+							&& (i/tabSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
+				}
+			}
+			return true;
+		}
+		
 		public boolean isFilled(){
 			if (this.getNumberOfEmptyCase() == 0) return true;
 			else return false;
