@@ -40,6 +40,10 @@ public class SudokuBoard {
 			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
 		
+		public void AddNumber(int val, XYLocation loc){
+			this.setValue(loc.getXCoOrdinate(), loc.getYCoOrdinate(), val);
+		}
+		
 		public boolean canAddNumber(int val, XYLocation loc){
 			if(val < 1 || val > 9) return false;
 			
