@@ -6,6 +6,7 @@ import java.lang.Math;
 
 import aima.core.agent.Action;
 import aima.core.agent.impl.DynamicAction;
+import aima.core.environment.eightpuzzle.EightPuzzleBoard;
 import aima.core.util.datastructure.XYLocation;
 
 public class SudokuBoard {
@@ -20,7 +21,15 @@ public class SudokuBoard {
 			System.arraycopy(state, 0, this.state, 0, state.length);
 			this.size = (int) Math.sqrt(state.length);
 		}
-	
+
+		public SudokuBoard(SudokuBoard copyBoard) {
+			this(copyBoard.getState());
+		}
+
+		public int[] getState() {
+			return state;
+		}
+
 		public int getNumberOfEmptyCase(){
 			int counter = 0;
 			for (int i=0; i < state.length; i++){
