@@ -119,17 +119,18 @@ public class SudokuBoard {
 		//
 
 		/**
-		 * Note: The graphic representation maps x values on row numbers (x-axis in
-		 * vertical direction).
+		 * Note: We have to clearly define how the graphic representation maps x and y.
+		 * In the EightPuzzleBoard project it maps :
+		 * - x values on row numbers (x-axis in vertical direction).
+		 * - y values on column numbers (y-axis in horizontal direction)
+		 * We, right now under here, seem to do the contrary. We'll have to check if the rest of our code is
+		 * following this representation too, in case we use code from aima library not doing so.
+		 * PS :
 		 */
 		private int getXCoord(int absPos) {
 			return absPos%tabSize;
 		}
 
-		/**
-		 * Note: The graphic representation maps y values on column numbers (y-axis
-		 * in horizontal direction).
-		 */
 		private int getYCoord(int absPos) {
 			return (absPos/tabSize)%tabSize;
 		}
