@@ -16,6 +16,10 @@ public class SudokuBoard {
 		private int[] state;
 		private int size;
 		
+		//
+		// PUBLIC METHODS
+		//
+		
 		public SudokuBoard(int[] state) {
 			this.state = new int[state.length];
 			System.arraycopy(state, 0, this.state, 0, state.length);
@@ -29,17 +33,17 @@ public class SudokuBoard {
 		public int[] getState() {
 			return state;
 		}
-
+		
+		public int getValueAt(XYLocation loc) {
+			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
+		}
+		
 		public int getNumberOfEmptyCase(){
 			int counter = 0;
 			for (int i=0; i < state.length; i++){
 				if (state[i] == 0) counter++;
 			}
 			return counter;
-		}
-		
-		public int getValueAt(XYLocation loc) {
-			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
 		
 		public boolean isAllConstraintsSatisfied(){
