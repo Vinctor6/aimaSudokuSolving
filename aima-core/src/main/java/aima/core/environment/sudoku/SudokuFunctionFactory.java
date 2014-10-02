@@ -6,6 +6,7 @@ import java.util.Set;
 import aima.core.agent.Action;
 import aima.core.search.framework.ActionsFunction;
 import aima.core.search.framework.ResultFunction;
+import aima.core.util.datastructure.XYLocation;
 
 public class SudokuFunctionFactory {
 	private static ActionsFunction _actionsFunction = null;
@@ -30,25 +31,30 @@ public class SudokuFunctionFactory {
 			SudokuBoard board = (SudokuBoard) state;
 
 			Set<Action> actions = new LinkedHashSet<Action>();
-/*
-			if (board.canAddNumber(SudokuBoard.ACTION)) {
-				actions.add(SudokuBoard.ACTION);
+			
+			int boardSize = board.getBoardSize();
+			for (int i = 0; i < boardSize; i++)
+			for (int j = 0; j < boardSize; j++)
+			for (int val = 1; val <= boardSize ; val++){
+				XYLocation loc = new XYLocation(i, j);
+				if (board.canAddNumber(val,loc))
+					actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
 			}
-*/
+			
 			return actions;
 		}
 	}
 
 	private static class SudokuResultFunction implements ResultFunction {
 		public Object result(Object s, Action a) {
-			SudokuBoard board = (SudokuBoard) s;
-/*
-			if (SudokuBoard.ACTION.equals(a)
-					&& board.canAddNumber(SudokuBoard.ACTION)) {
+			if (a instanceof SudokuAction) {
+				SudokuAction qa = (SudokuAction) a;
+				SudokuBoard board = (SudokuBoard) s;
 				SudokuBoard newBoard = new SudokuBoard(board);
-				newBoard.addNumber();
-				return newBoard;
-*/
+				if (qa.getName() == SudokuAction.ADD_NUMBER)
+					newBoard.addNumber(qa.getValue(), qa.getLocation());
+				s = newBoard;
+			}
 			// The Action is not understood or is a NoOp
 			// the result will be the current state.
 			return s;
