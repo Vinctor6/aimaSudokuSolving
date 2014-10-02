@@ -13,19 +13,19 @@ public class SudokuFunctionFactory {
 
 	public static ActionsFunction getActionsFunction() {
 		if (null == _actionsFunction) {
-			_actionsFunction = new EPActionsFunction();
+			_actionsFunction = new SudokuActionsFunction();
 		}
 		return _actionsFunction;
 	}
 
 	public static ResultFunction getResultFunction() {
 		if (null == _resultFunction) {
-			_resultFunction = new EPResultFunction();
+			_resultFunction = new SudokuResultFunction();
 		}
 		return _resultFunction;
 	}
 
-	private static class EPActionsFunction implements ActionsFunction {
+	private static class SudokuActionsFunction implements ActionsFunction {
 		public Set<Action> actions(Object state) {
 			SudokuBoard board = (SudokuBoard) state;
 
@@ -39,7 +39,7 @@ public class SudokuFunctionFactory {
 		}
 	}
 
-	private static class EPResultFunction implements ResultFunction {
+	private static class SudokuResultFunction implements ResultFunction {
 		public Object result(Object s, Action a) {
 			SudokuBoard board = (SudokuBoard) s;
 /*
