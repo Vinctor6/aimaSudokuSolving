@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
 
-import aima.core.agent.Action;
-import aima.core.agent.impl.DynamicAction;
-import aima.core.environment.eightpuzzle.EightPuzzleBoard;
 import aima.core.util.datastructure.XYLocation;
 
 public class SudokuBoard {
 
-		public static Action FILL = new DynamicAction("Fill"); //not precise enough, how should we do?
-		public static Action ERASE = new DynamicAction("Erase"); //do we need that?
 		private int[] state;
 		private int boardSize;
 		private int cellSize;
@@ -48,7 +43,7 @@ public class SudokuBoard {
 			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
 		
-		public void AddNumber(int val, XYLocation loc){
+		public void addNumber(int val, XYLocation loc){
 			this.setValue(loc.getXCoOrdinate(), loc.getYCoOrdinate(), val);
 		}
 		
