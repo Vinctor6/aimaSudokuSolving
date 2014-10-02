@@ -14,7 +14,7 @@ public class SudokuBoard {
 		public static Action FILL = new DynamicAction("Fill"); //not precise enough, how should we do?
 		public static Action ERASE = new DynamicAction("Erase"); //do we need that?
 		private int[] state;
-		private int tabSize;
+		private int boardSize;
 		private int cellSize;
 		
 		//
@@ -24,8 +24,8 @@ public class SudokuBoard {
 		public SudokuBoard(int[] state) {
 			this.state = new int[state.length];
 			System.arraycopy(state, 0, this.state, 0, state.length);
-			this.tabSize = (int) Math.sqrt(state.length);
-			this.cellSize = (int) Math.sqrt(tabSize);
+			this.boardSize = (int) Math.sqrt(state.length);
+			this.cellSize = (int) Math.sqrt(boardSize);
 		}
 
 		public SudokuBoard(SudokuBoard copyBoard) {
@@ -34,6 +34,14 @@ public class SudokuBoard {
 
 		public int[] getState() {
 			return state;
+		}
+		
+		public int getBoardSize(){
+			return boardSize;
+		}
+		
+		public int getCellsize(){
+			return cellSize;
 		}
 		
 		public int getValueAt(XYLocation loc) {
@@ -55,8 +63,8 @@ public class SudokuBoard {
 					//Test column
 					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
 					//Test cell
-					else if ((i%tabSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
-							&& (i/tabSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
+					else if ((i%boardSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
+							&& (i/boardSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
 				}
 			}
 			return true;
@@ -76,8 +84,8 @@ public class SudokuBoard {
 		}
 		
 		public boolean isAllConstraintsSatisfied(){
-			for (int row=0; row < tabSize; row++){
-				for (int col=0; col < tabSize; col++){
+			for (int row=0; row < boardSize; row++){
+				for (int col=0; col < boardSize; col++){
 					if (!isConstraintSatisfiedFor(new XYLocation(col, row))) return false;
 				}
 			}
@@ -95,8 +103,8 @@ public class SudokuBoard {
 					// Vérification de la contrainte sur la colonne
 					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
 					// Vérification de la contrainte dans la zone
-					else if ((i%tabSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
-							&& (i/tabSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
+					else if ((i%boardSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
+							&& (i/boardSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
 				}
 			}
 			return true;
@@ -106,10 +114,10 @@ public class SudokuBoard {
 		public String toString() {
 			String retVal = "";
 			for (int i = 0; i < state.length;i++){
-				if ((i+1)%tabSize == 0) retVal += state[i] + "\n";
+				if ((i+1)%boardSize == 0) retVal += state[i] + "\n";
 				else retVal += state[i] + " ";
-				if(((i+1)%tabSize)%cellSize == 0 && (i+1)%tabSize != 0) retVal += " ";
-				if ((i+1)%(cellSize*tabSize) == 0) retVal += "\n";
+				if(((i+1)%boardSize)%cellSize == 0 && (i+1)%boardSize != 0) retVal += " ";
+				if ((i+1)%(cellSize*boardSize) == 0) retVal += "\n";
 			}
 			return retVal;
 		}
@@ -128,15 +136,15 @@ public class SudokuBoard {
 		 * PS :
 		 */
 		private int getXCoord(int absPos) {
-			return absPos%tabSize;
+			return absPos%boardSize;
 		}
 
 		private int getYCoord(int absPos) {
-			return (absPos/tabSize)%tabSize;
+			return (absPos/boardSize)%boardSize;
 		}
 
 		private int getAbsPosition(int x, int y) {
-			return y*tabSize + x;
+			return y*boardSize + x;
 		}
 
 		private int getValueAt(int x, int y) {
