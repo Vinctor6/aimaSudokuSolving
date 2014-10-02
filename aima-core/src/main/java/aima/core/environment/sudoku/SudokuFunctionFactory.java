@@ -31,8 +31,8 @@ public class SudokuFunctionFactory {
 
 			Set<Action> actions = new LinkedHashSet<Action>();
 /*
-			if (board.canAddNumber()) {
-				actions.add();
+			if (board.canAddNumber(SudokuBoard.ACTION)) {
+				actions.add(SudokuBoard.ACTION);
 			}
 */
 			return actions;
@@ -42,29 +42,13 @@ public class SudokuFunctionFactory {
 	private static class EPResultFunction implements ResultFunction {
 		public Object result(Object s, Action a) {
 			SudokuBoard board = (SudokuBoard) s;
-
-			if (SudokuBoard.UP.equals(a)
-					&& board.canMoveGap(SudokuBoard.UP)) {
+/*
+			if (SudokuBoard.ACTION.equals(a)
+					&& board.canAddNumber(SudokuBoard.ACTION)) {
 				SudokuBoard newBoard = new SudokuBoard(board);
-				newBoard.moveGapUp();
+				newBoard.addNumber();
 				return newBoard;
-			} else if (SudokuBoard.DOWN.equals(a)
-					&& board.canMoveGap(SudokuBoard.DOWN)) {
-				SudokuBoard newBoard = new SudokuBoard(board);
-				newBoard.moveGapDown();
-				return newBoard;
-			} else if (SudokuBoard.LEFT.equals(a)
-					&& board.canMoveGap(SudokuBoard.LEFT)) {
-				SudokuBoard newBoard = new SudokuBoard(board);
-				newBoard.moveGapLeft();
-				return newBoard;
-			} else if (SudokuBoard.RIGHT.equals(a)
-					&& board.canMoveGap(SudokuBoard.RIGHT)) {
-				SudokuBoard newBoard = new SudokuBoard(board);
-				newBoard.moveGapRight();
-				return newBoard;
-			}
-
+*/
 			// The Action is not understood or is a NoOp
 			// the result will be the current state.
 			return s;
