@@ -11,16 +11,62 @@ import aima.core.util.datastructure.XYLocation;
 
 public class SudokuBoard {
 
-		public static Action FILL = new DynamicAction("Fill");
-		public static Action ERASE = new DynamicAction("Erase");
+		public static Action FILL = new DynamicAction("Fill"); //not precise enough, how should we do?
+		public static Action ERASE = new DynamicAction("Erase"); //do we need that?
 		private int[] state;
-		private int size;
+		private int tabSize;
+		private int cellSize;
+		
+		//
+		// PUBLIC METHODS
+		//
 		
 		public SudokuBoard(int[] state) {
-			this.state = state;
-			this.size = (int) Math.sqrt(state.length);
+			this.state = new int[state.length];
+			System.arraycopy(state, 0, this.state, 0, state.length);
+			this.tabSize = (int) Math.sqrt(state.length);
+			this.cellSize = (int) Math.sqrt(tabSize);
 		}
-	
+
+		public SudokuBoard(SudokuBoard copyBoard) {
+			this(copyBoard.getState());
+		}
+
+		public int[] getState() {
+			return state;
+		}
+		
+		public int getValueAt(XYLocation loc) {
+			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
+		}
+		
+		public void AddNumber(int val, XYLocation loc){
+			this.setValue(loc.getXCoOrdinate(), loc.getYCoOrdinate(), val);
+		}
+		
+		public boolean canAddNumber(int val, XYLocation loc){
+			if(val < 1 || val > 9) return false;
+			
+			int indexLoc = getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate());	
+			for (int i=0; i < state.length; i++){
+				if (state[i] == val && i != indexLoc){
+					//Test line
+					if (getYCoord(i) == loc.getYCoOrdinate()) return false;
+					//Test column
+					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
+					//Test cell
+					else if ((i%tabSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
+							&& (i/tabSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
+				}
+			}
+			return true;
+		}
+		
+		public boolean isFilled(){
+			if (this.getNumberOfEmptyCase() == 0) return true;
+			else return false;
+		}
+		
 		public int getNumberOfEmptyCase(){
 			int counter = 0;
 			for (int i=0; i < state.length; i++){
@@ -29,13 +75,9 @@ public class SudokuBoard {
 			return counter;
 		}
 		
-		public int getValueAt(XYLocation loc) {
-			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
-		}
-		
 		public boolean isAllConstraintsSatisfied(){
-			for (int row=0; row < size; row++){
-				for (int col=0; col < size; col++){
+			for (int row=0; row < tabSize; row++){
+				for (int col=0; col < tabSize; col++){
 					if (!isConstraintSatisfiedFor(new XYLocation(col, row))) return false;
 				}
 			}
@@ -48,13 +90,13 @@ public class SudokuBoard {
 			
 			for (int i=0; i < state.length; i++){
 				if (state[i] == state[indexLoc] && i != indexLoc){
-					// Vérification de la contrainte sur la ligne
-					if (i >= (loc.getYCoOrdinate())*size && i < loc.getYCoOrdinate()*size+size) return false;
-					// Vérification de la contrainte sur la colonne
-					else if (i%size == loc.getXCoOrdinate()%size) return false;
-					// Vérification de la contrainte dans la zone
-					else if ((i%size)/(int)Math.sqrt(size) == loc.getXCoOrdinate()/(int)Math.sqrt(size)
-							&& (i/size)/(int)Math.sqrt(size) == loc.getYCoOrdinate()/(int)Math.sqrt(size)) return false;
+					// VÃ©rification de la contrainte sur la ligne
+					if (getYCoord(i) == loc.getYCoOrdinate()) return false;
+					// VÃ©rification de la contrainte sur la colonne
+					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
+					// VÃ©rification de la contrainte dans la zone
+					else if ((i%tabSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
+							&& (i/tabSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
 				}
 			}
 			return true;
@@ -64,10 +106,10 @@ public class SudokuBoard {
 		public String toString() {
 			String retVal = "";
 			for (int i = 0; i < state.length;i++){
-				if ((i+1)%size == 0) retVal += state[i] + "\n";
+				if ((i+1)%tabSize == 0) retVal += state[i] + "\n";
 				else retVal += state[i] + " ";
-				if(((i+1)%size)%Math.sqrt(size) == 0 && (i+1)%size != 0) retVal += " ";
-				if ((i+1)%(Math.sqrt(size)*size) == 0) retVal += "\n";
+				if(((i+1)%tabSize)%cellSize == 0 && (i+1)%tabSize != 0) retVal += " ";
+				if ((i+1)%(cellSize*tabSize) == 0) retVal += "\n";
 			}
 			return retVal;
 		}
@@ -77,23 +119,24 @@ public class SudokuBoard {
 		//
 
 		/**
-		 * Note: The graphic representation maps x values on row numbers (x-axis in
-		 * vertical direction).
+		 * Note: We have to clearly define how the graphic representation maps x and y.
+		 * In the EightPuzzleBoard project it maps :
+		 * - x values on row numbers (x-axis in vertical direction).
+		 * - y values on column numbers (y-axis in horizontal direction)
+		 * We, right now under here, seem to do the contrary. We'll have to check if the rest of our code is
+		 * following this representation too, in case we use code from aima library not doing so.
+		 * PS :
 		 */
 		private int getXCoord(int absPos) {
-			return absPos / 3;
+			return absPos%tabSize;
 		}
 
-		/**
-		 * Note: The graphic representation maps y values on column numbers (y-axis
-		 * in horizontal direction).
-		 */
 		private int getYCoord(int absPos) {
-			return absPos % 3;
+			return (absPos/tabSize)%tabSize;
 		}
 
 		private int getAbsPosition(int x, int y) {
-			return y*size + x;
+			return y*tabSize + x;
 		}
 
 		private int getValueAt(int x, int y) {

@@ -7,9 +7,9 @@ public class SudokuGoalTest implements GoalTest{
 	@Override
 	public boolean isGoalState(Object state) {
 		SudokuBoard board = (SudokuBoard) state;
-		/*return board.getEmptyCase() == 0
-				&& board.isAllConstraintsSatisfied() == 0;*/
-		return false;
+		if (board.isFilled()){
+			return board.isAllConstraintsSatisfied();
+		}
+		else return false;
 	}
-
 }
