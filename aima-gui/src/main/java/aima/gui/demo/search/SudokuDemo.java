@@ -12,22 +12,16 @@ import java.util.List;
 import java.util.Properties;
 
 import aima.core.agent.Action;
-import aima.core.agent.State;
-import aima.core.environment.eightpuzzle.EightPuzzleBoard;
-import aima.core.environment.eightpuzzle.EightPuzzleFunctionFactory;
-import aima.core.environment.eightpuzzle.EightPuzzleGoalTest;
-import aima.core.environment.eightpuzzle.ManhattanHeuristicFunction;
-import aima.core.environment.eightpuzzle.MisplacedTilleHeuristicFunction;
 import aima.core.environment.sudoku.SudokuBoard;
+import aima.core.environment.sudoku.SudokuFunctionFactory;
+import aima.core.environment.sudoku.SudokuGoalTest;
 import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
 import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
-import aima.core.search.local.SimulatedAnnealingSearch;
 import aima.core.search.uninformed.DepthLimitedSearch;
-import aima.core.search.uninformed.IterativeDeepeningSearch;
 
 public class SudokuDemo {
 	private static ArrayList<SudokuBoard> sudokus = new ArrayList<SudokuBoard>();
@@ -39,8 +33,9 @@ public class SudokuDemo {
 		for (SudokuBoard sudoku : sudokus){
 			System.out.println(sudoku + "\n\n\n");
 		}
-		/*sudokuDFSDemo();
-		sudokuHCDemo();
+
+		sudokuDFSDemo(sudokus.get(0));
+		/*sudokuHCDemo();
 		sudokuGreedyBestFirstDemo();*/
 	}
 	
@@ -106,19 +101,20 @@ public class SudokuDemo {
 		SudokuDemo.sudokus = sudokus;
 	}
 	
-	private static void sudokuDFSDemo(State initialState) {
+	private static void sudokuDFSDemo(SudokuBoard initialBoard) {
 		System.out.println("\nSudokuDemo DFS (9) -->");
-		/*try {
-			Problem problem = new Problem(initialState, EightPuzzleFunctionFactory
-					.getActionsFunction(), EightPuzzleFunctionFactory
-					.getResultFunction(), new EightPuzzleGoalTest());
+		try {
+			Problem problem = new Problem(initialBoard,
+					SudokuFunctionFactory.getActionsFunction(),
+					SudokuFunctionFactory.getResultFunction(),
+					new SudokuGoalTest());
 			Search search = new DepthLimitedSearch(9);
 			SearchAgent agent = new SearchAgent(problem, search);
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 
 	}
 
