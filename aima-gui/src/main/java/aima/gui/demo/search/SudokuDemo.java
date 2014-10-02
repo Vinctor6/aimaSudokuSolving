@@ -30,10 +30,11 @@ public class SudokuDemo {
 		String filename = askForFilename();
 		loadGrids(filename);
 		
-		for (SudokuBoard sudoku : sudokus){
+/*		for (SudokuBoard sudoku : sudokus){
 			System.out.println(sudoku + "\n\n\n");
 		}
-
+*/
+		System.out.println(sudokus.get(0));
 		sudokuDFSDemo(sudokus.get(0));
 		/*sudokuHCDemo();
 		sudokuGreedyBestFirstDemo();*/
@@ -109,7 +110,9 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest());
 			Search search = new DepthLimitedSearch(9);
+			System.out.println("test1"); //works before
 			SearchAgent agent = new SearchAgent(problem, search);
+			System.out.println("test2"); //doesn't work after
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
