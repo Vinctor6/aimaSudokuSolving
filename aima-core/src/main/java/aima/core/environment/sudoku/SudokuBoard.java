@@ -112,13 +112,17 @@ public class SudokuBoard {
 		
 		@Override
 		public String toString() {
-			String retVal = "";
-			for (int i = 0; i < state.length;i++){
-				if ((i+1)%boardSize == 0) retVal += state[i] + "\n";
-				else retVal += state[i] + " ";
-				if(((i+1)%boardSize)%cellSize == 0 && (i+1)%boardSize != 0) retVal += " ";
-				if ((i+1)%(cellSize*boardSize) == 0) retVal += "\n";
-			}
+			String retVal = "";                       
+            for (int i = 0; i < state.length;i++){
+            	if(((i+1)%boardSize)%cellSize == 0 && (i+1)%boardSize != 0) retVal += state[i] + " | ";
+            	else retVal += state[i] + " ";
+            	if ((i+1)%boardSize == 0) retVal += "\n";
+            	if ((i+1)%(cellSize*boardSize) == 0){
+            		if((i+1) != state.length)
+            			for (int j = 0; j < this.boardSize*2-1+(this.cellSize-1)*2;j++) retVal += "-";
+            		retVal += "\n";
+            	}
+            }
 			return retVal;
 		}
 
