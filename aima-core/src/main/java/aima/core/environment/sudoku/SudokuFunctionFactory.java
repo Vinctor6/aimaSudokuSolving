@@ -34,11 +34,13 @@ public class SudokuFunctionFactory {
 			
 			int boardSize = board.getBoardSize();
 			for (int i = 0; i < boardSize; i++)
-			for (int j = 0; j < boardSize; j++)
-			for (int val = 1; val <= boardSize ; val++){
+			for (int j = 0; j < boardSize; j++){
 				XYLocation loc = new XYLocation(i, j);
-				if (board.canAddNumber(val,loc))
-					actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
+				if (board.isLocationEmpty(loc))
+				for (int val = 1; val <= boardSize ; val++){
+					if (board.canAddNumber(val,loc))
+						actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
+				}
 			}
 			
 			return actions;

@@ -48,7 +48,7 @@ public class SudokuBoard {
 		}
 		
 		public boolean canAddNumber(int val, XYLocation loc){
-			if(!this.isLocationEmpty(loc) || val < 1 || val > 9) return false;
+			if(val < 1 || val > 9) return false;
 			
 			int indexLoc = getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate());	
 			for (int i=0; i < state.length; i++){
