@@ -36,13 +36,24 @@ public class SudokuFunctionFactory {
 			for (int i = 0; i < boardSize; i++)
 			for (int j = 0; j < boardSize; j++){
 				XYLocation loc = new XYLocation(i, j);
-				if (board.isLocationEmpty(loc))
-				for (int val = 1; val <= boardSize ; val++){
-					if (board.canAddNumber(val,loc))
+				if (board.isLocationEmpty(loc)){
+					boolean canAddOneNumber = false;
+					for (int val = 1; val <= boardSize ; val++)
+					if (board.canAddNumber(val,loc)){
+						canAddOneNumber = true;
 						actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
+					}
+					if(!canAddOneNumber)
+					{
+						/* If we can't fill one location of the board,
+						 * this means the given board will never be able to be completed.
+						 * We can stop here and return a set of empty actions.						
+						*/
+						actions.clear();
+						return actions;
+					}
 				}
 			}
-			
 			return actions;
 		}
 	}
