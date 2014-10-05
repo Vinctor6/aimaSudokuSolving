@@ -15,16 +15,17 @@ import aima.core.agent.Action;
 import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
 import aima.core.environment.sudoku.SudokuGoalTest;
-import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
 import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
-import aima.core.search.uninformed.DepthLimitedSearch;
+import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
 
 public class SudokuDemo {
 	private static ArrayList<SudokuBoard> sudokus = new ArrayList<SudokuBoard>();
+	
+	private static boolean printStates = false;
 
 	public static void main(String[] args) {
 		String filename = askForFilename();
@@ -103,16 +104,14 @@ public class SudokuDemo {
 	}
 	
 	private static void sudokuDFSDemo(SudokuBoard initialBoard) {
-		System.out.println("\nSudokuDemo DFS (9) -->");
+		System.out.println("\nSudokuDemo DFS -->");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
-					new SudokuGoalTest());
-			Search search = new DepthLimitedSearch(9);
-			System.out.println("test1"); //works before
+					new SudokuGoalTest(printStates));
+			Search search = new DepthFirstNodesLimitedSearch(25);
 			SearchAgent agent = new SearchAgent(problem, search);
-			System.out.println("test2"); //doesn't work after
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
