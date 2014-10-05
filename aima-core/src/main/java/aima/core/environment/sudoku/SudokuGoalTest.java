@@ -16,9 +16,6 @@ public class SudokuGoalTest implements GoalTest{
 		
 		if(printOn)	System.out.println(board);
 		
-		if (board.isFilled()){
-			return board.isAllConstraintsSatisfied();
-		}
-		else return false;
+		return board.isFilled();
 	}
 }

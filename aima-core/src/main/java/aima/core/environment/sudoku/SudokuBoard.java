@@ -89,33 +89,6 @@ public class SudokuBoard {
 			return counter;
 		}
 		
-		public boolean isAllConstraintsSatisfied(){
-			for (int row=0; row < boardSize; row++){
-				for (int col=0; col < boardSize; col++){
-					if (!isConstraintSatisfiedFor(new XYLocation(col, row))) return false;
-				}
-			}
-			return true;
-		}
-		
-		public boolean isConstraintSatisfiedFor(XYLocation loc){
-			int indexLoc = getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate());
-			if (state[indexLoc] == 0) return false;
-			
-			for (int i=0; i < state.length; i++){
-				if (state[i] == state[indexLoc] && i != indexLoc){
-					// Vérification de la contrainte sur la ligne
-					if (getYCoord(i) == loc.getYCoOrdinate()) return false;
-					// Vérification de la contrainte sur la colonne
-					else if (getXCoord(i) == loc.getXCoOrdinate()) return false;
-					// Vérification de la contrainte dans la zone
-					else if ((i%boardSize)/(int)cellSize == loc.getXCoOrdinate()/(int)cellSize
-							&& (i/boardSize)/(int)cellSize == loc.getYCoOrdinate()/(int)cellSize) return false;
-				}
-			}
-			return true;
-		}
-		
 		@Override
 		public String toString() {
 			String retVal = "";                       
