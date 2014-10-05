@@ -11,7 +11,7 @@ public class SudokuBiggerConstraintHeuristicFunction implements HeuristicFunctio
 	public double h(Object state) {
 		SudokuBoard board = (SudokuBoard) state;
 		int retVal = 0;
-		for (int i = 1; i < board.getBoardSize(); i++) {
+		for (int i = 1; i <= board.getBoardSize(); i++) {
 			if(board.canAddNumber(i, board.getLocFilled()))
 				retVal ++;
 		}
