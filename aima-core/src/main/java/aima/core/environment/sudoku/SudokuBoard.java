@@ -11,6 +11,7 @@ public class SudokuBoard {
 		private int[] state;
 		private int boardSize;
 		private int cellSize;
+		private XYLocation locFilled;
 		
 		//
 		// PUBLIC METHODS
@@ -39,11 +40,16 @@ public class SudokuBoard {
 			return cellSize;
 		}
 		
+		public XYLocation getLocFilled(){
+			return locFilled;
+		}
+		
 		public int getValueAt(XYLocation loc) {
 			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
 		
 		public void addNumber(int val, XYLocation loc){
+			this.locFilled = loc;
 			this.setValue(loc.getXCoOrdinate(), loc.getYCoOrdinate(), val);
 		}
 		
