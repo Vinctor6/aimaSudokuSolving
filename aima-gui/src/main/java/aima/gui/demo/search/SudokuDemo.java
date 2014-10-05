@@ -12,20 +12,23 @@ import java.util.List;
 import java.util.Properties;
 
 import aima.core.agent.Action;
+import aima.core.environment.sudoku.SudokuBiggerConstraintHeuristicFunction;
 import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
 import aima.core.environment.sudoku.SudokuGoalTest;
+import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
 import aima.core.search.informed.AStarSearch;
+import aima.core.search.informed.BestFirstSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
 import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
 
 public class SudokuDemo {
 	private static ArrayList<SudokuBoard> sudokus = new ArrayList<SudokuBoard>();
 	
-	private static boolean printStates = false;
+	private static boolean printStates = true;
 
 	public static void main(String[] args) {
 		String filename = askForFilename();
@@ -36,9 +39,8 @@ public class SudokuDemo {
 		}
 */
 		System.out.println(sudokus.get(0));
-		sudokuDFSDemo(sudokus.get(0));
-		/*sudokuHCDemo();
-		sudokuGreedyBestFirstDemo();*/
+		//sudokuDFSDemo(sudokus.get(0));
+		sudokuBestFirstDemo(sudokus.get(0));
 	}
 	
 	 /** 
@@ -123,7 +125,20 @@ public class SudokuDemo {
 	private static void sudokuHCDemo() {
 	}
 
-	private static void sudokuGreedyBestFirstDemo() {
+	private static void sudokuBestFirstDemo(SudokuBoard initialBoard) {
+		System.out.println("\nSudokuDemo BestFirst -->");
+		try {
+			Problem problem = new Problem(initialBoard,
+					SudokuFunctionFactory.getActionsFunction(),
+					SudokuFunctionFactory.getResultFunction(),
+					new SudokuGoalTest(printStates));
+			Search search = new GreedyBestFirstSearch(new GraphSearch(), new SudokuBiggerConstraintHeuristicFunction());
+			SearchAgent agent = new SearchAgent(problem, search);
+			printActions(agent.getActions());
+			printInstrumentation(agent.getInstrumentation());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
