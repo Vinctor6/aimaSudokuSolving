@@ -1,7 +1,6 @@
 package aima.core.environment.sudoku;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 import java.lang.Math;
 
 import aima.core.util.datastructure.XYLocation;
@@ -90,6 +89,37 @@ public class SudokuBoard {
 			return counter;
 		}
 		
+		public boolean isSquareEmpty(XYLocation loc){
+			return (getValueAt(loc) == 0)?true:false;
+		}
+		
+		public boolean isSquareEmpty(int x, int y){
+			return (getValueAt(x, y) == 0)?true:false;
+		}
+		
+		public void fillWithRandomValues(){
+			int leftCornerZone=0;
+			while(leftCornerZone < boardSize*boardSize){
+				boolean[] availableList = new boolean[boardSize];
+				for (int i=0; i < boardSize; i++) availableList[i] = true;
+				
+				for (int i=getXCoord(leftCornerZone); i < getXCoord(leftCornerZone)+cellSize; i++)
+				for (int j=getYCoord(leftCornerZone); j < getYCoord(leftCornerZone)+cellSize;j++){
+					if (!isSquareEmpty(i, j)) availableList[getValueAt(i, j)-1] = false;
+				}
+				
+				for (int i=getXCoord(leftCornerZone); i < getXCoord(leftCornerZone)+cellSize; i++)
+				for (int j=getYCoord(leftCornerZone); j < getYCoord(leftCornerZone)+cellSize;j++)
+					if (isSquareEmpty(i, j)){
+						int randValue = getSudokuRandomNumber(availableList);
+						this.setValue(i, j, randValue);
+						availableList[randValue-1] = false;
+					}
+				if (leftCornerZone%boardSize == 2*cellSize) leftCornerZone += cellSize+(cellSize-1)*boardSize;
+				else leftCornerZone += cellSize;
+			}
+		}
+		
 		@Override
 		public String toString() {
 			String retVal = "";                       
@@ -136,10 +166,19 @@ public class SudokuBoard {
 			return state[getAbsPosition(x, y)];
 		}
 
+		private int getSudokuRandomNumber(boolean[] availableList){
+		    Random rand = new Random();
+		    int randomNum;
+		    do{
+		    	randomNum = rand.nextInt(availableList.length);
+		    } while(availableList[randomNum] != true);
+
+		    return randomNum+1;
+		}
+		
 		private void setValue(int x, int y, int val) {
 			int absPos = getAbsPosition(x, y);
 			state[absPos] = val;
-
 		}
 		
 }
