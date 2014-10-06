@@ -39,10 +39,10 @@ public class SudokuFunctionFactory {
 				if (board.isLocationEmpty(loc)){
 					boolean canAddOneNumber = false;
 					for (int val = 1; val <= boardSize ; val++)
-					if (board.canAddNumber(val,loc)){
-						canAddOneNumber = true;
-						actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
-					}
+						if (board.canAddNumber(val,loc)){
+							canAddOneNumber = true;
+							actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
+						}
 					if(!canAddOneNumber)
 					{
 						board.isStuck = true;
