@@ -1,7 +1,6 @@
 package aima.core.environment.sudoku;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.lang.Math;
 
 import aima.core.util.datastructure.XYLocation;
@@ -106,6 +105,29 @@ public class SudokuBoard {
 			return retVal;
 		}
 
+		@Override
+		public boolean equals(Object o) {
+
+			if (this == o) {
+				return true;
+			}
+			if ((o == null) || (this.getClass() != o.getClass())) {
+				return false;
+			}
+			SudokuBoard aBoard = (SudokuBoard) o;
+
+			for(int i = 0; i < this.getBoardSize(); i++ )
+				for(int j = 0; j < this.getBoardSize(); j++){
+					if (this.getValueAt(i,j) != aBoard.getValueAt(new XYLocation(i,j))) return false;
+				}
+			return true;
+		}
+		
+		@Override
+		public int hashCode() {
+			return Arrays.hashCode(state);
+			//return this.toString().hashCode();
+		}
 		//
 		// PRIVATE METHODS
 		//
