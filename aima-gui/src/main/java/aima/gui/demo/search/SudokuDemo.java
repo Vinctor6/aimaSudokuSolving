@@ -20,24 +20,20 @@ import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
-import aima.core.search.informed.AStarSearch;
-import aima.core.search.informed.BestFirstSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
+import aima.core.search.informed.GreedyBestFirstEvaluationFunction;
 import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
 
 public class SudokuDemo {
 	private static ArrayList<SudokuBoard> sudokus = new ArrayList<SudokuBoard>();
 	
-	private static boolean printStates = true;
+	private static boolean printStates = false;
+	private static int nodesLimit = 10000;
 
 	public static void main(String[] args) {
 		String filename = askForFilename();
 		loadGrids(filename);
 		
-/*		for (SudokuBoard sudoku : sudokus){
-			System.out.println(sudoku + "\n\n\n");
-		}
-*/
 		System.out.println(sudokus.get(0));
 		//sudokuDFSDemo(sudokus.get(0));
 		sudokuBestFirstDemo(sudokus.get(0));
@@ -112,7 +108,7 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest(printStates));
-			Search search = new DepthFirstNodesLimitedSearch(25);
+			Search search = new DepthFirstNodesLimitedSearch(nodesLimit);
 			SearchAgent agent = new SearchAgent(problem, search);
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
@@ -132,6 +128,7 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest(printStates));
+			//On veut modifier l'algo GraphSearch pour inclure le compteur (action cutoff) + rejeter certains noeuds (if isStuck)
 			Search search = new GreedyBestFirstSearch(new GraphSearch(), new SudokuBiggerConstraintHeuristicFunction());
 			SearchAgent agent = new SearchAgent(problem, search);
 			printActions(agent.getActions());
