@@ -1,6 +1,7 @@
 package aima.core.environment.sudoku;
 
 import aima.core.search.framework.HeuristicFunction;
+import aima.core.util.datastructure.XYLocation;
 
 /**
  * For the location just filled
@@ -8,12 +9,37 @@ import aima.core.search.framework.HeuristicFunction;
  */
 public class SudokuBiggerConstraintHeuristicFunction implements HeuristicFunction {
 
+	private int functionNbr;
+	public SudokuBiggerConstraintHeuristicFunction(int functionNbr)
+	{
+		this.functionNbr = functionNbr;
+	}
+	
 	public double h(Object state) {
 		SudokuBoard board = (SudokuBoard) state;
 		int retVal = 0;
-		for (int i = 1; i <= board.getBoardSize(); i++) {
-			if(board.canAddNumber(i, board.getLocFilled()))
-				retVal ++;
+		// functionNbr = 1 : check number of possible values for the filled location
+		if (this.functionNbr == 1){
+			for (int i = 1; i <= board.getBoardSize(); i++) {
+				if(board.canAddNumber(i, board.getLocFilled())) retVal ++;
+			}
+		}
+		// functionNbr = 2 : sum of potential actions
+		else if (this.functionNbr == 2){
+			int boardSize = board.getBoardSize();
+			for(int i = 0; i < boardSize; i++ ){
+				for(int j = 0; j < boardSize; j++){
+					XYLocation loc = new XYLocation(i, j);
+					if (board.isLocationEmpty(loc)){
+						boolean canAddOneNumber = false;
+						for (int val = 1; val <= boardSize; val++) {
+							canAddOneNumber = true;
+							if(board.canAddNumber(val, loc)) retVal ++;
+						}
+						if(!canAddOneNumber) return boardSize*boardSize*boardSize;
+					}
+				}
+			}
 		}
 		return retVal;
 	}
