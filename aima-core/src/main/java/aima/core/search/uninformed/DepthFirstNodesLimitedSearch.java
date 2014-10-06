@@ -5,12 +5,15 @@ import java.util.Collections;
 import java.util.List;
 
 import aima.core.agent.Action;
+import aima.core.environment.sudoku.SudokuAction;
+import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.search.framework.CutOffIndicatorAction;
 import aima.core.search.framework.Node;
 import aima.core.search.framework.NodeExpander;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchUtils;
+import aima.core.util.datastructure.XYLocation;
 
 public class DepthFirstNodesLimitedSearch extends NodeExpander implements Search {
 	private static String PATH_COST = "pathCost";
@@ -18,6 +21,8 @@ public class DepthFirstNodesLimitedSearch extends NodeExpander implements Search
 	private final int limit;
 	private int cpt;
 	private boolean cutoff_occurred;
+	private boolean isStuck;
+	private XYLocation stuckLoc;
 
 	public DepthFirstNodesLimitedSearch(int limit) {
 		this.limit = limit;
@@ -126,10 +131,22 @@ public class DepthFirstNodesLimitedSearch extends NodeExpander implements Search
 		//Else : evaluate the children of node
 		else {											
 			for (Node child : this.expandNode(node, problem)) {
-				if(this.cutoff_occurred) return cutoff(); //stop if we touched the limit already
-				(this.cpt)++; //if not, increase number of nodes generated
+				//stop if we touched the limit already
+				if(this.cutoff_occurred) return cutoff();
+				SudokuBoard state = (SudokuBoard) child.getState();
+				//if we were stuck and can't find another value to try, return failure
+				if(isStuck && state.getLocFilled() != stuckLoc) return failure(); 
+				//else, if we were stuck but will try with another value at this location, give it a new chance
+				else if(isStuck && state.getLocFilled() == stuckLoc) isStuck = false;
+				(this.cpt)++; //increase number of nodes generated
 				List<Action> result = recursiveDLS(child, problem); //generate actions from node
-				if (!isFailure(result)) return result; //return existing actions
+				if (!isFailure(result)) {
+					return result; //return existing actions
+				}else{
+					SudokuBoard test = (SudokuBoard) child.getState();
+					isStuck = test.isStuck;
+					stuckLoc = test.getLocFilled();
+				}
 			}
 			return failure();
 		}

@@ -12,6 +12,7 @@ public class SudokuBoard {
 		private int boardSize;
 		private int cellSize;
 		private XYLocation locFilled;
+		public boolean isStuck = false;
 		
 		//
 		// PUBLIC METHODS

@@ -45,6 +45,7 @@ public class SudokuFunctionFactory {
 					}
 					if(!canAddOneNumber)
 					{
+						board.isStuck = true;
 						/* If we can't fill one location of the board,
 						 * this means the given board will never be able to be completed.
 						 * We can stop here and return a set of empty actions.						
