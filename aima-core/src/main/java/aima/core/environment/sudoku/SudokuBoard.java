@@ -97,6 +97,15 @@ public class SudokuBoard {
 			return (getValueAt(x, y) == 0)?true:false;
 		}
 		
+		public int getNumberOfConflictsAt(XYLocation loc, int val){
+			int indexLoc = getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate());
+			int conflicts = 0;
+			for (int i=0; i < state.length; i++)
+				if (state[i] == val && i != indexLoc)
+					if (getYCoord(i) == loc.getYCoOrdinate() || getXCoord(i) == loc.getXCoOrdinate()) conflicts++;
+			return conflicts;
+		}
+		
 		public void fillWithRandomValues(){
 			int leftCornerZone=0;
 			while(leftCornerZone < boardSize*boardSize){
