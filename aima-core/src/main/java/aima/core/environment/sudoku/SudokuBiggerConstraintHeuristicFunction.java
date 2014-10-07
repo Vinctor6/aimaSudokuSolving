@@ -24,6 +24,8 @@ public class SudokuBiggerConstraintHeuristicFunction implements HeuristicFunctio
 			for (int i = 1; i <= boardSize; i++) {
 				if(board.canAddNumber(i, board.getLocFilled())) retVal ++;
 			}
+			if(retVal == 1) return 0.0;
+			if(retVal == 0) return boardSize*boardSize*boardSize;
 			retVal += board.getNumberOfEmptyCase();
 		}
 		// functionNbr = 2 : sum of potential actions left in every empty location
@@ -32,12 +34,13 @@ public class SudokuBiggerConstraintHeuristicFunction implements HeuristicFunctio
 				for(int j = 0; j < boardSize; j++){
 					XYLocation loc = new XYLocation(i, j);
 					if (board.isLocationEmpty(loc)){
-						boolean canAddOneNumber = false;
+						int nbrOfValAdded = 0;
 						for (int val = 1; val <= boardSize; val++) {
-							canAddOneNumber = true;
+							nbrOfValAdded++;
 							if(board.canAddNumber(val, loc)) retVal ++;
 						}
-						if(!canAddOneNumber) return boardSize*boardSize*boardSize;
+						if(nbrOfValAdded == 1) return 0.0;
+						if(nbrOfValAdded == 0) return boardSize*boardSize*boardSize;
 					}
 				}
 			}
