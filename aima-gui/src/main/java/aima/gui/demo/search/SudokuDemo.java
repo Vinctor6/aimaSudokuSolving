@@ -31,10 +31,10 @@ public class SudokuDemo {
 
 	private static boolean printInitState = false;
 	private static boolean printGoalState = true;
-	private static boolean printAllStates = false;
+	private static boolean printAllStates = true;
 	private static boolean printActions = false;
 	private static boolean printInstrumentation = true;
-	private static int nodesLimit = 500;
+	private static int nodesLimit = 5;
 	private static int heuristicNbr = 1; // 1 ou 2
 
 	public static void main(String[] args) {
@@ -47,9 +47,9 @@ public class SudokuDemo {
 			if(printInitState) System.out.print(board);
 			cpt++;
 			System.out.println("\nSudoku "+cpt+" :");
-			sudokuDFSDemo(board);
+			//sudokuDFSDemo(board);
 			//sudokuBestFirstDemo(board);
-			//sudokuHCDemo(board);
+			sudokuHCDemo(board);
 		}
 		
 	}
@@ -129,10 +129,11 @@ public class SudokuDemo {
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
 			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
+			//System.out.println("Search Outcome=" + search.getOutcome());
+			//if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	private static void sudokuHCDemo(SudokuBoard initialBoard) {
@@ -144,14 +145,21 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getIResultFunction(),
 					new SudokuHCGoalTest(printAllStates));
 			HillClimbingSearch search = new HillClimbingSearch(
-					new ConstraintsUnsatisifiedHeuristic());
+					new ConstraintsUnsatisifiedHeuristic()){
+				private int expanded = 0;
+				public List<Node> expandNode(Node node, Problem problem) {
+					expanded++;
+					if (expanded <= nodesLimit)
+						return super.expandNode(node, problem);
+					else
+						return new ArrayList<Node>();
+					};
+			};
 			SearchAgent agent = new SearchAgent(problem, search);
-
-			System.out.println();
-			printActions(agent.getActions());
+			if(printActions) printActions(agent.getActions());
+			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
 			System.out.println("Search Outcome=" + search.getOutcome());
-			System.out.println("Final State=\n" + search.getLastSearchState());
-			printInstrumentation(agent.getInstrumentation());
+			if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -179,6 +187,8 @@ public class SudokuDemo {
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
 			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
+			//System.out.println("Search Outcome=" + search.getOutcome());
+			//if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
