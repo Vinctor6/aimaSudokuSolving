@@ -36,7 +36,7 @@ public class SudokuBoard {
 			return boardSize;
 		}
 		
-		public int getCellsize(){
+		public int getCellSize(){
 			return cellSize;
 		}
 		
