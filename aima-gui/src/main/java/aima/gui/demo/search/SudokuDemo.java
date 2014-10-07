@@ -122,6 +122,7 @@ public class SudokuDemo {
 
 	private static void sudokuHCDemo(SudokuBoard initialBoard) {
 		System.out.println("\nSudokuDemo HillClimbing  -->");
+		initialBoard.fillWithRandomValues();
 		try {
 			Problem problem = new Problem(new SudokuBoard(initialBoard),
 					SudokuFunctionFactory.getIActionsFunction(),
