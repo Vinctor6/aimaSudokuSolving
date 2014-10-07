@@ -8,25 +8,12 @@ public class SudokuHCAction extends DynamicAction{
 
 	public static final String ATTRIBUTE_NUMBER_LOC1 = "location1";
 	public static final String ATTRIBUTE_NUMBER_LOC2 = "location2";
-	public static final String ATTRIBUTE_NUMBER_VAL1 = "value1";
-	public static final String ATTRIBUTE_NUMBER_VAL2 = "value2";
 
 	public SudokuHCAction(String type, XYLocation loc1, int val1, XYLocation loc2, int val2) {
 		super(type);
 		setAttribute(ATTRIBUTE_NUMBER_LOC1, loc1);
-		setAttribute(ATTRIBUTE_NUMBER_VAL1, val1);
 		setAttribute(ATTRIBUTE_NUMBER_LOC2, loc2);
-		setAttribute(ATTRIBUTE_NUMBER_VAL2, val2);
 	}
-
-	public int getFirstValue() {
-		return (int) getAttribute(ATTRIBUTE_NUMBER_VAL1);
-	}
-	
-	public int getSecondValue() {
-		return (int) getAttribute(ATTRIBUTE_NUMBER_VAL2);
-	}
-	
 	public XYLocation getFirstLocation() {
 		return (XYLocation) getAttribute(ATTRIBUTE_NUMBER_LOC1);
 	}
