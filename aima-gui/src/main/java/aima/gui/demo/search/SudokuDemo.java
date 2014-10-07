@@ -17,11 +17,12 @@ import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
 import aima.core.environment.sudoku.SudokuGoalTest;
 import aima.core.search.framework.GraphSearch;
+import aima.core.search.framework.Node;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
+import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
-import aima.core.search.informed.GreedyBestFirstEvaluationFunction;
 import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
 
 public class SudokuDemo {
@@ -33,10 +34,17 @@ public class SudokuDemo {
 	public static void main(String[] args) {
 		String filename = askForFilename();
 		loadGrids(filename);
+				
+		int cpt = 0;
+		for(SudokuBoard board : sudokus)
+		{
+			//System.out.println(board);
+			cpt++;
+			System.out.println("\nSudoku "+cpt+" :");
+			//sudokuDFSDemo(board);
+			sudokuBestFirstDemo(board);
+		}
 		
-		System.out.println(sudokus.get(0));
-		//sudokuDFSDemo(sudokus.get(0));
-		sudokuBestFirstDemo(sudokus.get(0));
 	}
 	
 	 /** 
@@ -102,7 +110,7 @@ public class SudokuDemo {
 	}
 	
 	private static void sudokuDFSDemo(SudokuBoard initialBoard) {
-		System.out.println("\nSudokuDemo DFS -->");
+		System.out.println("SudokuDemo DFS -->");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
@@ -122,14 +130,24 @@ public class SudokuDemo {
 	}
 
 	private static void sudokuBestFirstDemo(SudokuBoard initialBoard) {
-		System.out.println("\nSudokuDemo BestFirst -->");
+		System.out.println("SudokuDemo BestFirst -->");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest(printStates));
-			//On veut modifier l'algo GraphSearch pour inclure le compteur (action cutoff) + rejeter certains noeuds (if isStuck)
-			Search search = new GreedyBestFirstSearch(new GraphSearch(), new SudokuBiggerConstraintHeuristicFunction());
+			Search search = new AStarSearch(
+					new GraphSearch() {
+						private int expanded = 0;
+						public List<Node> expandNode(Node node, Problem problem) {
+							expanded++;
+							if (expanded <= nodesLimit)
+								return super.expandNode(node, problem);
+							else
+								return new ArrayList<Node>();
+							};
+					}
+					, new SudokuBiggerConstraintHeuristicFunction(1));
 			SearchAgent agent = new SearchAgent(problem, search);
 			printActions(agent.getActions());
 			printInstrumentation(agent.getInstrumentation());
