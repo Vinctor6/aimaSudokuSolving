@@ -37,13 +37,21 @@ public class SudokuFunctionFactory {
 			for (int j = 0; j < boardSize; j++){
 				XYLocation loc = new XYLocation(i, j);
 				if (board.isLocationEmpty(loc)){
-					boolean canAddOneNumber = false;
+					int nbrOfValAdded = 0;
+					int onlyVal = 0;
 					for (int val = 1; val <= boardSize ; val++)
-					if (board.canAddNumber(val,loc)){
-						canAddOneNumber = true;
-						actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
+						if (board.canAddNumber(val,loc)){
+							nbrOfValAdded++;
+							onlyVal = val;
+							actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, val, loc));
+						}
+					if(nbrOfValAdded == 1)
+					{
+						actions.clear();
+						actions.add(new SudokuAction(SudokuAction.ADD_NUMBER, onlyVal, loc));
+						return actions;
 					}
-					if(!canAddOneNumber)
+					else if(nbrOfValAdded == 0)
 					{
 						board.isStuck = true;
 						/* If we can't fill one location of the board,
