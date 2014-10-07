@@ -14,8 +14,10 @@ public class SudokuGoalTest implements GoalTest{
 	public boolean isGoalState(Object state) {
 		SudokuBoard board = (SudokuBoard) state;
 		
-		if(printOn)	System.out.println(board);
+		if(printOn)	System.out.print(board);
 		
-		return board.isFilled();
+		boolean isFilled = board.isFilled();
+		if(isFilled) System.out.print("Goal state obtenu :\n"+board);
+		return isFilled;
 	}
 }
