@@ -1,27 +1,27 @@
 package aima.gui.demo.search;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import aima.core.agent.Action;
+import aima.core.environment.sudoku.ConstraintsUnsatisifiedHeuristic;
 import aima.core.environment.sudoku.SudokuBiggerConstraintHeuristicFunction;
 import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
 import aima.core.environment.sudoku.SudokuGoalTest;
+import aima.core.environment.sudoku.SudokuHCGoalTest;
 import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
 import aima.core.search.informed.GreedyBestFirstSearch;
-import aima.core.search.informed.GreedyBestFirstEvaluationFunction;
+import aima.core.search.local.HillClimbingSearch;
 import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
 
 public class SudokuDemo {
@@ -50,7 +50,9 @@ public class SudokuDemo {
 			BufferedReader in = new BufferedReader(new FileReader(filename));
 			while (in.ready()){
 				int[] newGrid = toIntArray(in.readLine());
-				sudokus.add(new SudokuBoard(newGrid));
+				SudokuBoard newBoard = new SudokuBoard(newGrid);
+				newBoard.initializeFixedStates();
+				sudokus.add(newBoard);
 			}
 			in.close();
 		} catch (IOException e) {

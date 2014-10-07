@@ -11,6 +11,7 @@ public class SudokuBoard {
 		private int boardSize;
 		private int cellSize;
 		private XYLocation locFilled;
+		private boolean[] fixedValues;
 		public boolean isStuck = false;
 		
 		//
@@ -22,6 +23,7 @@ public class SudokuBoard {
 			System.arraycopy(state, 0, this.state, 0, state.length);
 			this.boardSize = (int) Math.sqrt(state.length);
 			this.cellSize = (int) Math.sqrt(boardSize);
+			initializeFixedValues();
 		}
 
 		public SudokuBoard(SudokuBoard copyBoard) {
@@ -44,6 +46,20 @@ public class SudokuBoard {
 			return locFilled;
 		}
 		
+		public boolean[] getFixedValues() {
+			return fixedValues;
+		}
+		
+		public void initializeFixedValues() {
+			this.fixedValues = new boolean[this.state.length];
+			for(int i=0; i < this.state.length; i++)
+				this.fixedValues[i] = (this.state[i] != 0)?true:false;
+		}
+		
+		public boolean isFixedValue(XYLocation loc) {
+			return fixedValues[this.getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate())];
+		}
+
 		public int getValueAt(XYLocation loc) {
 			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
