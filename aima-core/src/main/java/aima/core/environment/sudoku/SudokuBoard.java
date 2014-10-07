@@ -144,6 +144,15 @@ public class SudokuBoard {
 			}
 		}
 		
+		public void permuteValues(XYLocation loc1, XYLocation loc2) throws Exception{
+			if(isFixedValue(loc1) || isFixedValue(loc2)) throw new Exception("Trying to permute fixed values");
+			if (loc1 != loc2){
+				int tmp = getValueAt(loc1);
+				setValue(loc1.getXCoOrdinate(), loc1.getYCoOrdinate(), getValueAt(loc2));
+				setValue(loc2.getXCoOrdinate(), loc2.getYCoOrdinate(), tmp);
+			}
+		}
+		
 		@Override
 		public String toString() {
 			String retVal = "";                       
