@@ -89,21 +89,20 @@ public class SudokuBoard {
 			return counter;
 		}
 		
+		public int getNumberOfHorizontalAndVerticalConflictsOnTheGrid(){
+			int count = 0;
+			for (int i=0; i < boardSize; i++)
+				for (int j=0; j < boardSize; j++)
+					count += getNumberOfHorizontalAndVerticalConflictsAt(i, j);
+			return count;
+		}
+		
 		public boolean isSquareEmpty(XYLocation loc){
 			return (getValueAt(loc) == 0)?true:false;
 		}
 		
 		public boolean isSquareEmpty(int x, int y){
 			return (getValueAt(x, y) == 0)?true:false;
-		}
-		
-		public int getNumberOfConflictsAt(XYLocation loc, int val){
-			int indexLoc = getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate());
-			int conflicts = 0;
-			for (int i=0; i < state.length; i++)
-				if (state[i] == val && i != indexLoc)
-					if (getYCoord(i) == loc.getYCoOrdinate() || getXCoord(i) == loc.getXCoOrdinate()) conflicts++;
-			return conflicts;
 		}
 		
 		public void fillWithRandomValues(){
@@ -188,6 +187,25 @@ public class SudokuBoard {
 		private void setValue(int x, int y, int val) {
 			int absPos = getAbsPosition(x, y);
 			state[absPos] = val;
+		}
+		
+		public int getNumberOfHorizontalAndVerticalConflictsAt(int x, int y){
+			return getNumberOfHorizontalConflictsAt(x, y)
+					+ getNumberOfVerticalConflictsAt(x, y);
+		}	
+		
+		private int getNumberOfHorizontalConflictsAt(int x, int y){
+			int conflicts = 0, val = getValueAt(x, y);
+			for (int i=y*boardSize; i < y*boardSize+boardSize; i++)
+				if (state[i] == val && i != getAbsPosition(x, y)) conflicts++;
+			return conflicts;
+		}
+		
+		private int getNumberOfVerticalConflictsAt(int x, int y){
+			int conflicts = 0, val = getValueAt(x, y);
+			for (int i=x; i < boardSize*boardSize; i+=boardSize)
+				if (state[i] == val && i != getAbsPosition(x, y)) conflicts++;
+			return conflicts;
 		}
 		
 }
