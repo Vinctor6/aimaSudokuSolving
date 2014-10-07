@@ -115,7 +115,7 @@ public class SudokuBoard {
 			for (int i=0; i < boardSize; i++)
 				for (int j=0; j < boardSize; j++)
 					count += getNumberOfHorizontalAndVerticalConflictsAt(i, j);
-			return count;
+			return count / 2;
 		}
 		
 		public boolean isSquareEmpty(XYLocation loc){
