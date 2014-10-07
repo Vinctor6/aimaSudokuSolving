@@ -108,7 +108,7 @@ public class SudokuFunctionFactory {
 								for (int k2=(leftCornerZone/boardSize)%boardSize; k2 < (leftCornerZone/boardSize)%boardSize+cellSize;k2++){
 									XYLocation loc2 = new XYLocation(k1,k2);
 									if (!loc2.equals(loc1) && !board.isFixedValue(loc2)){
-										actions.add(new SudokuHCAction(SudokuHCAction.PERMUTE_NUMBER, loc1, board.getValueAt(loc1), loc2, board.getValueAt(loc2)));
+										actions.add(new SudokuHCAction(SudokuHCAction.PERMUTE_NUMBER, loc1, loc2));
 									}
 								}
 						}
