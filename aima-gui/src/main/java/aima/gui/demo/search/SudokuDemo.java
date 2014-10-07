@@ -51,7 +51,7 @@ public class SudokuDemo {
 			while (in.ready()){
 				int[] newGrid = toIntArray(in.readLine());
 				SudokuBoard newBoard = new SudokuBoard(newGrid);
-				newBoard.initializeFixedStates();
+				newBoard.initializeFixedValues();
 				sudokus.add(newBoard);
 			}
 			in.close();

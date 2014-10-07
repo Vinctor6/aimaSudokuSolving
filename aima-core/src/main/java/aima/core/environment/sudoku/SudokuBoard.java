@@ -23,11 +23,11 @@ public class SudokuBoard {
 			System.arraycopy(state, 0, this.state, 0, state.length);
 			this.boardSize = (int) Math.sqrt(state.length);
 			this.cellSize = (int) Math.sqrt(boardSize);
-			initializeFixedValues();
 		}
 
 		public SudokuBoard(SudokuBoard copyBoard) {
 			this(copyBoard.getState());
+			this.setFixedValues(copyBoard.getFixedValues());
 		}
 
 		public int[] getState() {
@@ -50,10 +50,15 @@ public class SudokuBoard {
 			return fixedValues;
 		}
 		
+		public void setFixedValues(boolean[] fixedValues) {
+			this.fixedValues = fixedValues;
+		}
+
 		public void initializeFixedValues() {
 			this.fixedValues = new boolean[this.state.length];
-			for(int i=0; i < this.state.length; i++)
+			for(int i=0; i < this.state.length; i++){
 				this.fixedValues[i] = (this.state[i] != 0)?true:false;
+			}
 		}
 		
 		public boolean isFixedValue(XYLocation loc) {
