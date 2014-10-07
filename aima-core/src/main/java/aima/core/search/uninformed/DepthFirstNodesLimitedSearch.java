@@ -20,14 +20,12 @@ public class DepthFirstNodesLimitedSearch extends NodeExpander implements Search
 	private static List<Action> cutoffResult = null;
 	private final int limit;
 	private int cpt;
-	private boolean cutoff_occurred;
 	private boolean isStuck;
 	private XYLocation stuckLoc;
 
 	public DepthFirstNodesLimitedSearch(int limit) {
 		this.limit = limit;
 		this.cpt = 0;
-		this.cutoff_occurred = false;
 	}
 
 	/**
@@ -124,15 +122,12 @@ public class DepthFirstNodesLimitedSearch extends NodeExpander implements Search
 			return SearchUtils.actionsFromNodes(node.getPathFromRoot());
 		}
 		//If we are at the limit of nodes
-		else if (this.cpt == this.limit) { 				
-			this.cutoff_occurred = true;
+		else if (this.cpt >= this.limit) { 			
 			return cutoff();
 		}
 		//Else : evaluate the children of node
 		else {											
 			for (Node child : this.expandNode(node, problem)) {
-				//stop if we touched the limit already
-				if(this.cutoff_occurred) return cutoff();
 				SudokuBoard state = (SudokuBoard) child.getState();
 				//if we were stuck and can't find another value to try, return failure
 				if(isStuck && state.getLocFilled() != stuckLoc) return failure(); 
@@ -140,7 +135,8 @@ public class DepthFirstNodesLimitedSearch extends NodeExpander implements Search
 				else if(isStuck && state.getLocFilled() == stuckLoc) isStuck = false;
 				(this.cpt)++; //increase number of nodes generated
 				List<Action> result = recursiveDLS(child, problem); //generate actions from node
-				if (!isFailure(result)) {
+				if (isCutOff(result)) return cutoff();				//stop if we touched the limit already
+				else if (!isFailure(result)) {
 					return result; //return existing actions
 				}else{
 					SudokuBoard test = (SudokuBoard) child.getState();
