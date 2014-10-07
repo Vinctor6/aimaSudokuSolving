@@ -17,16 +17,17 @@ public class SudokuBiggerConstraintHeuristicFunction implements HeuristicFunctio
 	
 	public double h(Object state) {
 		SudokuBoard board = (SudokuBoard) state;
+		int boardSize = board.getBoardSize();
 		int retVal = 0;
-		// functionNbr = 1 : check number of possible values for the filled location
+		// functionNbr = 1 : check number of possible values for the filled location + number of empty left
 		if (this.functionNbr == 1){
-			for (int i = 1; i <= board.getBoardSize(); i++) {
+			for (int i = 1; i <= boardSize; i++) {
 				if(board.canAddNumber(i, board.getLocFilled())) retVal ++;
 			}
+			retVal += board.getNumberOfEmptyCase();
 		}
-		// functionNbr = 2 : sum of potential actions
+		// functionNbr = 2 : sum of potential actions left in every empty location
 		else if (this.functionNbr == 2){
-			int boardSize = board.getBoardSize();
 			for(int i = 0; i < boardSize; i++ ){
 				for(int j = 0; j < boardSize; j++){
 					XYLocation loc = new XYLocation(i, j);
