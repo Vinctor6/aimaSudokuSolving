@@ -110,7 +110,6 @@ public class SudokuFunctionFactory {
 				if (leftCornerZone%boardSize == 2*cellSize) leftCornerZone += cellSize+(cellSize-1)*boardSize;
 				else leftCornerZone += cellSize;
 			}
-			//System.out.println(actions);
 			return actions;
 		}
 	}
