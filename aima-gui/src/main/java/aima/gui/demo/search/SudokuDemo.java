@@ -27,9 +27,14 @@ import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
 
 public class SudokuDemo {
 	private static ArrayList<SudokuBoard> sudokus = new ArrayList<SudokuBoard>();
-	
-	private static boolean printStates = false;
-	private static int nodesLimit = 10000;
+
+	private static boolean printInitState = false;
+	private static boolean printGoalState = true;
+	private static boolean printAllStates = false;
+	private static boolean printActions = false;
+	private static boolean printInstrumentation = true;
+	private static int nodesLimit = 500;
+	private static int heuristicNbr = 1; // 1 ou 2
 
 	public static void main(String[] args) {
 		String filename = askForFilename();
@@ -38,11 +43,11 @@ public class SudokuDemo {
 		int cpt = 0;
 		for(SudokuBoard board : sudokus)
 		{
-			//System.out.println(board);
+			if(printInitState) System.out.print(board);
 			cpt++;
 			System.out.println("\nSudoku "+cpt+" :");
-			//sudokuDFSDemo(board);
-			sudokuBestFirstDemo(board);
+			sudokuDFSDemo(board);
+			//sudokuBestFirstDemo(board);
 		}
 		
 	}
@@ -115,11 +120,11 @@ public class SudokuDemo {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
-					new SudokuGoalTest(printStates));
+					new SudokuGoalTest(printAllStates));
 			Search search = new DepthFirstNodesLimitedSearch(nodesLimit);
 			SearchAgent agent = new SearchAgent(problem, search);
-			printActions(agent.getActions());
-			printInstrumentation(agent.getInstrumentation());
+			if(printActions) printActions(agent.getActions());
+			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -135,7 +140,7 @@ public class SudokuDemo {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
-					new SudokuGoalTest(printStates));
+					new SudokuGoalTest(printAllStates));
 			Search search = new AStarSearch(
 					new GraphSearch() {
 						private int expanded = 0;
@@ -147,10 +152,10 @@ public class SudokuDemo {
 								return new ArrayList<Node>();
 							};
 					}
-					, new SudokuBiggerConstraintHeuristicFunction(1));
+					, new SudokuBiggerConstraintHeuristicFunction(heuristicNbr));
 			SearchAgent agent = new SearchAgent(problem, search);
-			printActions(agent.getActions());
-			printInstrumentation(agent.getInstrumentation());
+			if(printActions) printActions(agent.getActions());
+			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
