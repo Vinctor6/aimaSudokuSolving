@@ -1,6 +1,7 @@
 package aima.core.environment.sudoku;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.lang.Math;
 
 import aima.core.util.datastructure.XYLocation;
@@ -11,6 +12,7 @@ public class SudokuBoard {
 		private int boardSize;
 		private int cellSize;
 		private XYLocation locFilled;
+		private boolean[] fixedValues;
 		public boolean isStuck = false;
 		
 		//
@@ -26,6 +28,7 @@ public class SudokuBoard {
 
 		public SudokuBoard(SudokuBoard copyBoard) {
 			this(copyBoard.getState());
+			this.setFixedValues(copyBoard.getFixedValues());
 		}
 
 		public int[] getState() {
@@ -36,7 +39,7 @@ public class SudokuBoard {
 			return boardSize;
 		}
 		
-		public int getCellsize(){
+		public int getCellSize(){
 			return cellSize;
 		}
 		
@@ -44,6 +47,25 @@ public class SudokuBoard {
 			return locFilled;
 		}
 		
+		public boolean[] getFixedValues() {
+			return fixedValues;
+		}
+		
+		public void setFixedValues(boolean[] fixedValues) {
+			this.fixedValues = fixedValues;
+		}
+
+		public void initializeFixedValues() {
+			this.fixedValues = new boolean[this.state.length];
+			for(int i=0; i < this.state.length; i++){
+				this.fixedValues[i] = (this.state[i] != 0)?true:false;
+			}
+		}
+		
+		public boolean isFixedValue(XYLocation loc) {
+			return fixedValues[this.getAbsPosition(loc.getXCoOrdinate(), loc.getYCoOrdinate())];
+		}
+
 		public int getValueAt(XYLocation loc) {
 			return getValueAt(loc.getXCoOrdinate(), loc.getYCoOrdinate());
 		}
@@ -87,6 +109,54 @@ public class SudokuBoard {
 				if (state[i] == 0) counter++;
 			}
 			return counter;
+		}
+		
+		public int getNumberOfHorizontalAndVerticalConflictsOnTheGrid(){
+			int count = 0;
+			for (int i=0; i < boardSize; i++)
+				for (int j=0; j < boardSize; j++)
+					count += getNumberOfHorizontalAndVerticalConflictsAt(i, j);
+			return count / 2;
+		}
+		
+		public boolean isSquareEmpty(XYLocation loc){
+			return (getValueAt(loc) == 0)?true:false;
+		}
+		
+		public boolean isSquareEmpty(int x, int y){
+			return (getValueAt(x, y) == 0)?true:false;
+		}
+		
+		public void fillWithRandomValues(){
+			int leftCornerZone=0;
+			while(leftCornerZone < boardSize*boardSize){
+				boolean[] availableList = new boolean[boardSize];
+				for (int i=0; i < boardSize; i++) availableList[i] = true;
+				
+				for (int i=getXCoord(leftCornerZone); i < getXCoord(leftCornerZone)+cellSize; i++)
+				for (int j=getYCoord(leftCornerZone); j < getYCoord(leftCornerZone)+cellSize;j++){
+					if (!isSquareEmpty(i, j)) availableList[getValueAt(i, j)-1] = false;
+				}
+				
+				for (int i=getXCoord(leftCornerZone); i < getXCoord(leftCornerZone)+cellSize; i++)
+				for (int j=getYCoord(leftCornerZone); j < getYCoord(leftCornerZone)+cellSize;j++)
+					if (isSquareEmpty(i, j)){
+						int randValue = getSudokuRandomNumber(availableList);
+						this.setValue(i, j, randValue);
+						availableList[randValue-1] = false;
+					}
+				if (leftCornerZone%boardSize == 2*cellSize) leftCornerZone += cellSize+(cellSize-1)*boardSize;
+				else leftCornerZone += cellSize;
+			}
+		}
+		
+		public void permuteValues(XYLocation loc1, XYLocation loc2) throws Exception{
+			if(isFixedValue(loc1) || isFixedValue(loc2)) throw new Exception("Trying to permute fixed values");
+			if (loc1 != loc2){
+				int tmp = getValueAt(loc1);
+				setValue(loc1.getXCoOrdinate(), loc1.getYCoOrdinate(), getValueAt(loc2));
+				setValue(loc2.getXCoOrdinate(), loc2.getYCoOrdinate(), tmp);
+			}
 		}
 		
 		@Override
@@ -158,10 +228,38 @@ public class SudokuBoard {
 			return state[getAbsPosition(x, y)];
 		}
 
+		private int getSudokuRandomNumber(boolean[] availableList){
+		    Random rand = new Random();
+		    int randomNum;
+		    do{
+		    	randomNum = rand.nextInt(availableList.length);
+		    } while(availableList[randomNum] != true);
+
+		    return randomNum+1;
+		}
+		
 		private void setValue(int x, int y, int val) {
 			int absPos = getAbsPosition(x, y);
 			state[absPos] = val;
-
+		}
+		
+		public int getNumberOfHorizontalAndVerticalConflictsAt(int x, int y){
+			return getNumberOfHorizontalConflictsAt(x, y)
+					+ getNumberOfVerticalConflictsAt(x, y);
+		}	
+		
+		private int getNumberOfHorizontalConflictsAt(int x, int y){
+			int conflicts = 0, val = getValueAt(x, y);
+			for (int i=y*boardSize; i < y*boardSize+boardSize; i++)
+				if (state[i] == val && i != getAbsPosition(x, y)) conflicts++;
+			return conflicts;
+		}
+		
+		private int getNumberOfVerticalConflictsAt(int x, int y){
+			int conflicts = 0, val = getValueAt(x, y);
+			for (int i=x; i < boardSize*boardSize; i+=boardSize)
+				if (state[i] == val && i != getAbsPosition(x, y)) conflicts++;
+			return conflicts;
 		}
 		
 }

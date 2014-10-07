@@ -1,21 +1,21 @@
 package aima.gui.demo.search;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
 import aima.core.agent.Action;
+import aima.core.environment.sudoku.ConstraintsUnsatisifiedHeuristic;
 import aima.core.environment.sudoku.SudokuBiggerConstraintHeuristicFunction;
 import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
 import aima.core.environment.sudoku.SudokuGoalTest;
+import aima.core.environment.sudoku.SudokuHCGoalTest;
 import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Node;
 import aima.core.search.framework.Problem;
@@ -23,6 +23,7 @@ import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
 import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
+import aima.core.search.local.HillClimbingSearch;
 import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
 
 public class SudokuDemo {
@@ -48,6 +49,7 @@ public class SudokuDemo {
 			System.out.println("\nSudoku "+cpt+" :");
 			sudokuDFSDemo(board);
 			//sudokuBestFirstDemo(board);
+			//sudokuHCDemo(board);
 		}
 		
 	}
@@ -63,7 +65,9 @@ public class SudokuDemo {
 			BufferedReader in = new BufferedReader(new FileReader(filename));
 			while (in.ready()){
 				int[] newGrid = toIntArray(in.readLine());
-				sudokus.add(new SudokuBoard(newGrid));
+				SudokuBoard newBoard = new SudokuBoard(newGrid);
+				newBoard.initializeFixedValues();
+				sudokus.add(newBoard);
 			}
 			in.close();
 		} catch (IOException e) {
@@ -131,7 +135,26 @@ public class SudokuDemo {
 
 	}
 
-	private static void sudokuHCDemo() {
+	private static void sudokuHCDemo(SudokuBoard initialBoard) {
+		System.out.println("\nSudokuDemo HillClimbing  -->");
+		initialBoard.fillWithRandomValues();
+		try {
+			Problem problem = new Problem(new SudokuBoard(initialBoard),
+					SudokuFunctionFactory.getIActionsFunction(),
+					SudokuFunctionFactory.getIResultFunction(),
+					new SudokuHCGoalTest(printAllStates));
+			HillClimbingSearch search = new HillClimbingSearch(
+					new ConstraintsUnsatisifiedHeuristic());
+			SearchAgent agent = new SearchAgent(problem, search);
+
+			System.out.println();
+			printActions(agent.getActions());
+			System.out.println("Search Outcome=" + search.getOutcome());
+			System.out.println("Final State=\n" + search.getLastSearchState());
+			printInstrumentation(agent.getInstrumentation());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void sudokuBestFirstDemo(SudokuBoard initialBoard) {
