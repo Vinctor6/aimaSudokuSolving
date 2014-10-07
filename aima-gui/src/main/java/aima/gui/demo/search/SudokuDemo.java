@@ -120,7 +120,25 @@ public class SudokuDemo {
 
 	}
 
-	private static void sudokuHCDemo() {
+	private static void sudokuHCDemo(SudokuBoard initialBoard) {
+		System.out.println("\nSudokuDemo HillClimbing  -->");
+		try {
+			Problem problem = new Problem(new SudokuBoard(initialBoard),
+					SudokuFunctionFactory.getIActionsFunction(),
+					SudokuFunctionFactory.getIResultFunction(),
+					new SudokuHCGoalTest(printStates));
+			HillClimbingSearch search = new HillClimbingSearch(
+					new ConstraintsUnsatisifiedHeuristic());
+			SearchAgent agent = new SearchAgent(problem, search);
+
+			System.out.println();
+			printActions(agent.getActions());
+			System.out.println("Search Outcome=" + search.getOutcome());
+			System.out.println("Final State=\n" + search.getLastSearchState());
+			printInstrumentation(agent.getInstrumentation());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void sudokuBestFirstDemo(SudokuBoard initialBoard) {
