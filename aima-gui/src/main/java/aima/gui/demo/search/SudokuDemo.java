@@ -25,17 +25,18 @@ import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
 import aima.core.search.local.HillClimbingSearch;
 import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
+import aima.core.search.uninformed.DepthFirstSearch;
 
 public class SudokuDemo {
 	private static ArrayList<SudokuBoard> sudokus = new ArrayList<SudokuBoard>();
 
+	private static int algoNbr = 1; // {1 DFS, 2 SiblingTest, 3 HC, 4 BFh1, 5 BFh2}
+	private static int nodesLimit = 100;
 	private static boolean printInitState = false;
-	private static boolean printGoalState = true;
-	private static boolean printAllStates = true;
+	private static boolean printGoalState = true; //once ready in Demo, remove the print in SUdokuGoalTest
+	private static boolean printAllStates = false;
 	private static boolean printActions = false;
 	private static boolean printInstrumentation = true;
-	private static int nodesLimit = 5;
-	private static int heuristicNbr = 1; // 1 ou 2
 
 	public static void main(String[] args) {
 		String filename = askForFilename();
@@ -47,11 +48,12 @@ public class SudokuDemo {
 			if(printInitState) System.out.print(board);
 			cpt++;
 			System.out.println("\nSudoku "+cpt+" :");
-			//sudokuDFSDemo(board);
-			//sudokuBestFirstDemo(board);
-			sudokuHCDemo(board);
+			if(algoNbr == 1 ) sudokuDFSDemo(board);
+			if(algoNbr == 2 ) sudokuDepthSiblingTestDemo(board);
+			if(algoNbr == 2 ) sudokuHCDemo(board);
+			if(algoNbr == 4 ) sudokuBestFirstDemo(board,1);
+			if(algoNbr == 5 ) sudokuBestFirstDemo(board,2);
 		}
-		
 	}
 	
 	 /** 
@@ -119,7 +121,34 @@ public class SudokuDemo {
 	}
 	
 	private static void sudokuDFSDemo(SudokuBoard initialBoard) {
-		System.out.println("SudokuDemo DFS -->");
+		System.out.println("SudokuDemo Depth First Search -->");
+		try {
+			Problem problem = new Problem(initialBoard,
+					SudokuFunctionFactory.getActionsFunction(),
+					SudokuFunctionFactory.getResultFunction(),
+					new SudokuGoalTest(printAllStates));
+			Search search = new DepthFirstSearch(new GraphSearch() {
+				private int expanded = 0;
+				public List<Node> expandNode(Node node, Problem problem) {
+					expanded++;
+					if (expanded <= nodesLimit)
+						return super.expandNode(node, problem);
+					else
+						return new ArrayList<Node>();
+					};
+			});
+			SearchAgent agent = new SearchAgent(problem, search);
+			if(printActions) printActions(agent.getActions());
+			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
+			//System.out.println("Search Outcome=" + search.getOutcome());
+			//if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void sudokuDepthSiblingTestDemo(SudokuBoard initialBoard) {
+		System.out.println("SudokuDemo N -->");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
@@ -165,7 +194,7 @@ public class SudokuDemo {
 		}
 	}
 
-	private static void sudokuBestFirstDemo(SudokuBoard initialBoard) {
+	private static void sudokuBestFirstDemo(SudokuBoard initialBoard, int heuristicNbr) {
 		System.out.println("SudokuDemo BestFirst -->");
 		try {
 			Problem problem = new Problem(initialBoard,
