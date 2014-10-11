@@ -208,7 +208,7 @@ public class SudokuDemo {
 						return super.expandNode(node, problem);
 					else
 						return new ArrayList<Node>();
-					};
+				};
 			});
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
@@ -221,7 +221,7 @@ public class SudokuDemo {
 	}
 	
 	private static void sudokuDepthSiblingTestDemo(SudokuBoard initialBoard) {
-		System.out.println("SudokuDemo N -->");
+		System.out.println("\nSudokuDemo N -->");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
@@ -268,7 +268,7 @@ public class SudokuDemo {
 	}
 
 	private static void sudokuBestFirstDemo(SudokuBoard initialBoard, int heuristicNbr) {
-		System.out.println("SudokuDemo BestFirst -->");
+		System.out.println("\nSudokuDemo BestFirst - Heuristic number "+heuristicNbr+" -->");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),

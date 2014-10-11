@@ -167,9 +167,10 @@ public class SudokuBoard {
             	else retVal += state[i] + " ";
             	if ((i+1)%boardSize == 0) retVal += "\n";
             	if ((i+1)%(cellSize*boardSize) == 0){
-            		if((i+1) != state.length)
+            		if((i+1) != state.length){
             			for (int j = 0; j < this.boardSize*2-1+(this.cellSize-1)*2;j++) retVal += "-";
-            		retVal += "\n";
+            			retVal += "\n";
+            		}
             	}
             }
 			return retVal;
