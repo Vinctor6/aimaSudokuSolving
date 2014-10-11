@@ -54,7 +54,7 @@ public class SudokuDemo {
 		for(int i=0; i < sudokus.size(); i++)
 		{
 			SudokuBoard board = sudokus.get(i);
-			System.out.println("\nSudoku "+i+1+" :");
+			System.out.println("\nSudoku "+(i+1)+" :");
 				if(printInitState) System.out.print(board);
 			
 			switch(algoNbr){
@@ -68,7 +68,7 @@ public class SudokuDemo {
 					sudokuHCDemo(board);
 					break;
 				case 4:
-					sudokuHCDemo(board);
+					sudokuBestFirstDemo(board,1);
 					break;
 				case 5:
 					sudokuBestFirstDemo(board,2);
