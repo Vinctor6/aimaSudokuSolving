@@ -92,7 +92,7 @@ public class SudokuDemo {
 			}
 			in.close();
 		} catch (IOException e) {
-			System.out.println("Erreur lors de la lecture du fichier de configuration.");
+			System.out.println("Error loading the grids from the configuration file.");
 			e.printStackTrace();
 		}
 	}
@@ -110,7 +110,7 @@ public class SudokuDemo {
 			line = keyboard.readLine();
 			if (line.equals("")) line = "100sudoku.txt";
 		}catch(IOException e){
-			System.out.println("Erreur lors de la lecture du nom de fichier.");
+			System.out.println("Error reading the filename.\n"+e.getMessage());
 			e.printStackTrace();
 		}
 		return line;
@@ -179,9 +179,8 @@ public class SudokuDemo {
      */  
     private static int[] toIntArray(String nbr) {
         int[] intArray = new int[nbr.length()];  
-        for (int i = 0; i < intArray.length; i++) {  
+        for (int i = 0; i < intArray.length; i++)
             intArray[i] = Integer.parseInt(nbr.substring(i, i+1)); 
-        }  
         return intArray;  
     }  
     
