@@ -30,29 +30,48 @@ import aima.core.search.uninformed.DepthFirstSearch;
 public class SudokuDemo {
 	private static ArrayList<SudokuBoard> sudokus = new ArrayList<SudokuBoard>();
 
-	private static int algoNbr = 1; // {1 DFS, 2 SiblingTest, 3 HC, 4 BFh1, 5 BFh2}
-	private static int nodesLimit = 100;
+	private static int algoNbr = 0; // {0 All, 1 DFS, 2 SiblingTest, 3 HC, 4 BFh1, 5 BFh2}
+	private static int nodesLimit = 1000;
 	private static boolean printInitState = false;
-	private static boolean printGoalState = true; //once ready in Demo, remove the print in SUdokuGoalTest
+	private static boolean printGoalState = false; //once ready in Demo, remove the print in SUdokuGoalTest
 	private static boolean printAllStates = false;
 	private static boolean printActions = false;
-	private static boolean printInstrumentation = true;
+	private static boolean printInstrumentation = false;
 
 	public static void main(String[] args) {
 		String filename = askForFilename();
 		loadGrids(filename);
-				
-		int cpt = 0;
-		for(SudokuBoard board : sudokus)
+		askForConfig();
+		
+		for(int i=0; i < sudokus.size(); i++)
 		{
-			if(printInitState) System.out.print(board);
-			cpt++;
-			System.out.println("\nSudoku "+cpt+" :");
-			if(algoNbr == 1 ) sudokuDFSDemo(board);
-			if(algoNbr == 2 ) sudokuDepthSiblingTestDemo(board);
-			if(algoNbr == 2 ) sudokuHCDemo(board);
-			if(algoNbr == 4 ) sudokuBestFirstDemo(board,1);
-			if(algoNbr == 5 ) sudokuBestFirstDemo(board,2);
+			SudokuBoard board = sudokus.get(i);
+			System.out.println("\nSudoku "+i+" :");
+				if(printInitState) System.out.print(board);
+			
+			switch(algoNbr){
+				case 1:
+					sudokuDFSDemo(board);
+					break;
+				case 2:
+					sudokuDepthSiblingTestDemo(board);
+					break;
+				case 3:
+					sudokuHCDemo(board);
+					break;
+				case 4:
+					sudokuHCDemo(board);
+					break;
+				case 5:
+					sudokuBestFirstDemo(board,2);
+					break;
+				default:
+					sudokuDFSDemo(board);
+					sudokuDepthSiblingTestDemo(board);
+					sudokuHCDemo(board);
+					sudokuBestFirstDemo(board,1);
+					sudokuBestFirstDemo(board,2);
+			}
 		}
 	}
 	
@@ -95,6 +114,60 @@ public class SudokuDemo {
 			e.printStackTrace();
 		}
 		return line;
+	}
+	
+	 /** 
+     * Ask for configurations of the program
+     *  
+     */  
+	private static void askForConfig(){
+		BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+		try{
+			String line = "";
+			System.out.println("What algorithm would you like to use (default: execute all): ");
+			System.out.println("1 for Depth First Search \n2 for Depth First Search with improvement on siblings\n"
+					+ "3 for Hill Climbing\n4 for Best first with heursitic 1\n5 for Best first with heuristic 2");
+			line = keyboard.readLine();
+			if (!line.equals("")) {
+				SudokuDemo.algoNbr = Integer.parseInt(line);
+				line = "";
+			}
+			System.out.println("What limit of nodes would you use (default: 1000): ");
+			line = keyboard.readLine();
+			if (!line.equals("")) {
+				SudokuDemo.nodesLimit = Integer.parseInt(line);
+				line = "";
+			}
+			System.out.println("What display would you use (default: print first state and final state):");
+			System.out.println("1 for all states printing \n2 for initial state and final state + actions\n3 for all states + actions\n");
+			line = keyboard.readLine();
+			int print = 0;
+			if (!line.equals("")) print = Integer.parseInt(line);
+			switch (print){
+				case 1:
+					SudokuDemo.printInitState = true;
+					SudokuDemo.printGoalState = true;
+					SudokuDemo.printAllStates = true;
+					break;
+				case 2:
+					SudokuDemo.printInitState = true;
+					SudokuDemo.printGoalState = true;
+					SudokuDemo.printActions = true;
+					SudokuDemo.printInstrumentation = true;
+					break;
+				case 3:
+					SudokuDemo.printAllStates = true;
+					SudokuDemo.printActions = true;
+					SudokuDemo.printInstrumentation = true;
+					break;
+				default:
+					SudokuDemo.printInitState = true;
+					SudokuDemo.printGoalState = true;
+			}
+		}catch(IOException e){
+			System.out.println("Erreur lors de la lecture d'un des paramètres de configuration");
+			e.printStackTrace();
+		}
 	}
 	
 	 /** 
