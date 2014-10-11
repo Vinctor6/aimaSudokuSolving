@@ -1,7 +1,11 @@
 package aima.gui.demo.search;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -37,16 +41,20 @@ public class SudokuDemo {
 	private static boolean printAllStates = false;
 	private static boolean printActions = false;
 	private static boolean printInstrumentation = false;
+	private static boolean outputStatistics = true;
+	private static BufferedWriter outFile = null;
+	private static int output = 0;
 
 	public static void main(String[] args) {
 		String filename = askForFilename();
 		loadGrids(filename);
 		askForConfig();
+		if (outputStatistics) initializeStatsOuptutFile();
 		
 		for(int i=0; i < sudokus.size(); i++)
 		{
 			SudokuBoard board = sudokus.get(i);
-			System.out.println("\nSudoku "+i+" :");
+			System.out.println("\nSudoku "+i+1+" :");
 				if(printInitState) System.out.print(board);
 			
 			switch(algoNbr){
@@ -73,6 +81,9 @@ public class SudokuDemo {
 					sudokuBestFirstDemo(board,2);
 			}
 		}
+		
+		
+		if (outputStatistics) closeStatsOuptutFile();
 	}
 	
 	 /** 
@@ -139,7 +150,8 @@ public class SudokuDemo {
 				line = "";
 			}
 			System.out.println("What display would you use (default: print first state and final state):");
-			System.out.println("1 for all states printing \n2 for initial state and final state + actions\n3 for all states + actions\n");
+			System.out.println("1 for all states printing \n2 for initial state and final state + actions\n3 for all states + actions\n"+
+								"4 for only instrumentation");
 			line = keyboard.readLine();
 			int print = 0;
 			if (!line.equals("")) print = Integer.parseInt(line);
@@ -160,6 +172,9 @@ public class SudokuDemo {
 					SudokuDemo.printActions = true;
 					SudokuDemo.printInstrumentation = true;
 					break;
+				case 4:
+					SudokuDemo.printInstrumentation = true;
+					break;
 				default:
 					SudokuDemo.printInitState = true;
 					SudokuDemo.printGoalState = true;
@@ -168,6 +183,35 @@ public class SudokuDemo {
 			System.out.println("Erreur lors de la lecture d'un des paramètres de configuration");
 			e.printStackTrace();
 		}
+	}
+	
+	
+	 /** 
+     * Initialize the file ouput for writing statictics data
+     * Statistics file will only contains the number of nodes expanded for the algorithm choosen
+     *  
+     */  	
+	private static void initializeStatsOuptutFile(){
+		try {
+			SudokuDemo.outFile = new BufferedWriter(new FileWriter("algo"+SudokuDemo.algoNbr+"-"+SudokuDemo.nodesLimit+".txt"));
+		} catch (IOException e) {
+			System.out.println("Error writing statistics data in output file.\n"+ e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	 /** 
+     * Close the statistics file output
+     *  
+     */  	
+	private static void closeStatsOuptutFile(){
+		if (outFile != null)
+			try {
+				outFile.close();
+			} catch (IOException e) {
+				System.out.println("Error trying to close the output file.\n"+ e.getMessage());
+				e.printStackTrace();
+			}
 	}
 	
 	 /** 
@@ -295,13 +339,20 @@ public class SudokuDemo {
 		}
 	}
 
-
 	private static void printInstrumentation(Properties properties) {
 		Iterator<Object> keys = properties.keySet().iterator();
 		while (keys.hasNext()) {
 			String key = (String) keys.next();
 			String property = properties.getProperty(key);
 			System.out.println(key + " : " + property);
+			if (SudokuDemo.outFile != null && key == "nodesExpanded")
+				try {
+					outFile.write(property);
+					outFile.newLine();
+				} catch (IOException e) {
+					System.err.println("Can't write to statistics output file.\n"+e.getMessage());
+					e.printStackTrace();
+				}
 		}
 	}
 
