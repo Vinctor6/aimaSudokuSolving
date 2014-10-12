@@ -28,7 +28,7 @@ import aima.core.search.framework.SearchAgent;
 import aima.core.search.informed.AStarSearch;
 import aima.core.search.informed.GreedyBestFirstSearch;
 import aima.core.search.local.HillClimbingSearch;
-import aima.core.search.uninformed.DepthFirstNodesLimitedSearch;
+import aima.core.search.uninformed.DepthFirstSiblingCutSearch;
 import aima.core.search.uninformed.DepthFirstSearch;
 
 public class SudokuDemo {
@@ -62,7 +62,7 @@ public class SudokuDemo {
 					sudokuDFSDemo(board);
 					break;
 				case 2:
-					sudokuDepthSiblingTestDemo(board);
+					sudokuDepthFirstSiblingCutDemo(board);
 					break;
 				case 3:
 					sudokuHCDemo(board);
@@ -75,7 +75,7 @@ public class SudokuDemo {
 					break;
 				default:
 					sudokuDFSDemo(board);
-					sudokuDepthSiblingTestDemo(board);
+					sudokuDepthFirstSiblingCutDemo(board);
 					sudokuHCDemo(board);
 					sudokuBestFirstDemo(board,1);
 					sudokuBestFirstDemo(board,2);
@@ -180,7 +180,7 @@ public class SudokuDemo {
 					SudokuDemo.printGoalState = true;
 			}
 		}catch(IOException e){
-			System.out.println("Erreur lors de la lecture d'un des paramètres de configuration");
+			System.out.println("Erreur lors de la lecture d'un des paramï¿½tres de configuration");
 			e.printStackTrace();
 		}
 	}
@@ -263,14 +263,14 @@ public class SudokuDemo {
 		}
 	}
 	
-	private static void sudokuDepthSiblingTestDemo(SudokuBoard initialBoard) {
+	private static void sudokuDepthFirstSiblingCutDemo(SudokuBoard initialBoard) {
 		System.out.println("\nSudokuDemo N -->");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest(printAllStates));
-			Search search = new DepthFirstNodesLimitedSearch(nodesLimit);
+			Search search = new DepthFirstSiblingCutSearch(nodesLimit);
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
 			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
