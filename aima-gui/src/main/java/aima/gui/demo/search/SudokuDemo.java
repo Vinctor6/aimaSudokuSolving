@@ -13,12 +13,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import com.sun.corba.se.spi.protocol.InitialServerRequestDispatcher;
+
 import aima.core.agent.Action;
 import aima.core.environment.sudoku.ConstraintsUnsatisfiedHeuristic;
 import aima.core.environment.sudoku.SudokuBiggerConstraintHeuristicFunction;
 import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
 import aima.core.environment.sudoku.SudokuGoalTest;
+import aima.core.environment.sudoku.SudokuHCAction;
 import aima.core.environment.sudoku.SudokuHCGoalTest;
 import aima.core.search.framework.GraphLimitedSearch;
 import aima.core.search.framework.GraphSearch;
@@ -270,9 +273,10 @@ public class SudokuDemo {
 
 	private static void sudokuHCDemo(SudokuBoard initialBoard) {
 		System.out.println("\n> HillClimbing");
-		initialBoard.fillWithRandomValues();
+		SudokuBoard newBoard = new SudokuBoard(initialBoard);
+		newBoard.fillWithRandomValues();
 		try {
-			Problem problem = new Problem(new SudokuBoard(initialBoard),
+			Problem problem = new Problem(new SudokuBoard(newBoard),
 					SudokuFunctionFactory.getIActionsFunction(),
 					SudokuFunctionFactory.getIResultFunction(),
 					new SudokuHCGoalTest(printAllStates));
