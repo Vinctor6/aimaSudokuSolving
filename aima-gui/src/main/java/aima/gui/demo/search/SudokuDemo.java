@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Properties;
 
 import aima.core.agent.Action;
-import aima.core.environment.sudoku.ConstraintsUnsatisifiedHeuristic;
+import aima.core.environment.sudoku.ConstraintsUnsatisfiedHeuristic;
 import aima.core.environment.sudoku.SudokuBiggerConstraintHeuristicFunction;
 import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
@@ -290,7 +290,7 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getIResultFunction(),
 					new SudokuHCGoalTest(printAllStates));
 			HillClimbingSearch search = new HillClimbingSearch(
-					new ConstraintsUnsatisifiedHeuristic()){
+					new ConstraintsUnsatisfiedHeuristic()){
 				private int expanded = 0;
 				public List<Node> expandNode(Node node, Problem problem) {
 					expanded++;

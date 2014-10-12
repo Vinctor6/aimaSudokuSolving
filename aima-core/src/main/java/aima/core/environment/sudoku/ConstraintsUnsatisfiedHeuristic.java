@@ -8,7 +8,7 @@ import aima.core.search.framework.HeuristicFunction;
 	 * 
 	 */
 
-public class ConstraintsUnsatisifiedHeuristic implements HeuristicFunction {
+public class ConstraintsUnsatisfiedHeuristic implements HeuristicFunction {
 	@Override
 	public double h(Object state) {
 		SudokuBoard board = (SudokuBoard) state;
