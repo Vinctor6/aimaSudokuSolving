@@ -20,6 +20,7 @@ import aima.core.environment.sudoku.SudokuBoard;
 import aima.core.environment.sudoku.SudokuFunctionFactory;
 import aima.core.environment.sudoku.SudokuGoalTest;
 import aima.core.environment.sudoku.SudokuHCGoalTest;
+import aima.core.search.framework.GraphLimitedSearch;
 import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Node;
 import aima.core.search.framework.Problem;
@@ -37,10 +38,9 @@ public class SudokuDemo {
 	private static int algoNbr = 0; // {0 All, 1 DFS, 2 SiblingTest, 3 HC, 4 BFh1, 5 BFh2}
 	private static int nodesLimit = 1000;
 	private static boolean printInitState = false;
-	private static boolean printGoalState = false; //once ready in Demo, remove the print in SUdokuGoalTest
+	private static boolean printFinalState = false;
 	private static boolean printAllStates = false;
 	private static boolean printActions = false;
-	private static boolean printInstrumentation = false;
 	private static boolean outputStatistics = true;
 	private static BufferedWriter outFile = null;
 	private static int output = 0;
@@ -49,12 +49,12 @@ public class SudokuDemo {
 		String filename = askForFilename();
 		loadGrids(filename);
 		askForConfig();
-		if (outputStatistics) initializeStatsOuptutFile();
+		if (outputStatistics) initializeStatsOutputFile();
 		
 		for(int i=0; i < sudokus.size(); i++)
 		{
 			SudokuBoard board = sudokus.get(i);
-			System.out.println("\n  <-- Sudoku "+(i+1)+" -->");
+			System.out.println("\n\n  <-- Sudoku "+(i+1)+" -->");
 				if(printInitState) System.out.print(board);
 			
 			switch(algoNbr){
@@ -83,7 +83,7 @@ public class SudokuDemo {
 		}
 		
 		
-		if (outputStatistics) closeStatsOuptutFile();
+		if (outputStatistics) closeStatsOutputFile();
 	}
 	
 	 /** 
@@ -116,7 +116,7 @@ public class SudokuDemo {
 	private static String askForFilename(){
 		BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
 		String line = "";
-		System.out.println("Enter the name of the file containing the grids (default: 100sudoku.txt): ");
+		System.out.println("Enter the name of the file containing the grids: (default: 100sudoku.txt) ");
 		try{
 			line = keyboard.readLine();
 			if (line.equals("")) line = "100sudoku.txt";
@@ -135,50 +135,42 @@ public class SudokuDemo {
 		BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
 		try{
 			String line = "";
-			System.out.println("What algorithm would you like to use (default: execute all): ");
-			System.out.println("1- Depth First Search \n2- Depth First Search with siblings ut\n"
+			System.out.println("What algorithm would you like to use? (Default: Execute all)");
+			System.out.println("1- Depth First Search \n2- Depth First Search with siblings cut\n"
 					+ "3- Hill Climbing\n4- Best first, heuristic 1\n5- Best first, heuristic 2");
 			line = keyboard.readLine();
 			if (!line.equals("")) {
 				SudokuDemo.algoNbr = Integer.parseInt(line);
 				line = "";
 			}
-			System.out.println("What limit of nodes would you use (default: 1000): ");
+			System.out.println("What limit of nodes would you use? (Default: 1000)");
 			line = keyboard.readLine();
 			if (!line.equals("")) {
 				SudokuDemo.nodesLimit = Integer.parseInt(line);
 				line = "";
 			}
-			System.out.println("What display would you like (default: First state, Final state, and Instrumentations):");
-			System.out.println("1- add All States \n2- add Actions \n3- add All States and Actions \n"+
-								"4- only Instrumentations");
+			System.out.println("What would you like to add to the display? (Default: only search Instrumentation and Outcome)");
+			System.out.println("1- Initial state and Final state \n2- All states \n3- Initial state, Final state and Actions");
 			line = keyboard.readLine();
 			int print = 0;
 			if (!line.equals("")) print = Integer.parseInt(line);
 			switch (print){
 				case 1:
 					SudokuDemo.printInitState = true;
-					SudokuDemo.printGoalState = true;
-					SudokuDemo.printAllStates = true;
+					SudokuDemo.printFinalState = true;
 					break;
 				case 2:
 					SudokuDemo.printInitState = true;
-					SudokuDemo.printGoalState = true;
-					SudokuDemo.printActions = true;
-					SudokuDemo.printInstrumentation = true;
+					SudokuDemo.printFinalState = true;
+					SudokuDemo.printAllStates = true;
 					break;
 				case 3:
-					SudokuDemo.printAllStates = true;
+					SudokuDemo.printInitState = true;
+					SudokuDemo.printFinalState = true;
 					SudokuDemo.printActions = true;
-					SudokuDemo.printInstrumentation = true;
-					break;
-				case 4:
-					SudokuDemo.printInstrumentation = true;
 					break;
 				default:
-					SudokuDemo.printInitState = true;
-					SudokuDemo.printGoalState = true;
-					SudokuDemo.printInstrumentation = true;
+					break;
 			}
 		}catch(IOException e){
 			System.out.println("Erreur lors de la lecture d'un des paramètres de configuration");
@@ -188,12 +180,12 @@ public class SudokuDemo {
 	
 	
 	 /** 
-     * Initialize the file ouput for writing statistics data
+     * Initialize the file output for writing statistics data
      * Statistics file will ot
 					SudokuDemo.printInstrumentation = true;nly contains the number of nodes expanded for the algorithm choosen
      *  
      */  	
-	private static void initializeStatsOuptutFile(){
+	private static void initializeStatsOutputFile(){
 		try {
 			SudokuDemo.outFile = new BufferedWriter(new FileWriter("algo"+SudokuDemo.algoNbr+"-"+SudokuDemo.nodesLimit+".txt"));
 		} catch (IOException e) {
@@ -206,7 +198,7 @@ public class SudokuDemo {
      * Close the statistics file output
      *  
      */  	
-	private static void closeStatsOuptutFile(){
+	private static void closeStatsOutputFile(){
 		if (outFile != null)
 			try {
 				outFile.close();
@@ -245,21 +237,13 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest(printAllStates));
-			Search search = new DepthFirstSearch(new GraphSearch() {
-				private int expanded = 0;
-				public List<Node> expandNode(Node node, Problem problem) {
-					expanded++;
-					if (expanded <= nodesLimit)
-						return super.expandNode(node, problem);
-					else
-						return new ArrayList<Node>();
-				};
-			});
+			GraphLimitedSearch graphLimitedSearch = new GraphLimitedSearch(nodesLimit);
+			Search search = new DepthFirstSearch(graphLimitedSearch);
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
-			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
-			//System.out.println("Search Outcome=" + search.getOutcome());
-			//if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
+			printInstrumentation(agent.getInstrumentation());
+			System.out.println("Search Outcome : " + graphLimitedSearch.getOutcome());
+			if(printFinalState) System.out.print("Final State : \n" + graphLimitedSearch.getLastSearchState());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -272,12 +256,13 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest(printAllStates));
-			Search search = new DepthFirstSiblingCutSearch(nodesLimit);
+			DepthFirstSiblingCutSearch depthFirstSiblingCutSearch = new DepthFirstSiblingCutSearch(nodesLimit);
+			Search search = depthFirstSiblingCutSearch;
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
-			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
-			//System.out.println("Search Outcome=" + search.getOutcome());
-			//if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
+			printInstrumentation(agent.getInstrumentation());
+			System.out.println("Search Outcome : " + depthFirstSiblingCutSearch.getOutcome());
+			if(printFinalState) System.out.print("Final State : \n" + depthFirstSiblingCutSearch.getLastSearchState());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -304,9 +289,9 @@ public class SudokuDemo {
 			};
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
-			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
-			System.out.println("Search Outcome=" + search.getOutcome());
-			if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
+			printInstrumentation(agent.getInstrumentation());
+			System.out.println("Search Outcome : " + search.getOutcome());
+			if(printFinalState) System.out.print("Final State : \n" + search.getLastSearchState());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -319,23 +304,14 @@ public class SudokuDemo {
 					SudokuFunctionFactory.getActionsFunction(),
 					SudokuFunctionFactory.getResultFunction(),
 					new SudokuGoalTest(printAllStates));
-			Search search = new AStarSearch(
-					new GraphSearch() {
-						private int expanded = 0;
-						public List<Node> expandNode(Node node, Problem problem) {
-							expanded++;
-							if (expanded <= nodesLimit)
-								return super.expandNode(node, problem);
-							else
-								return new ArrayList<Node>();
-							};
-					}
-					, new SudokuBiggerConstraintHeuristicFunction(heuristicNbr));
+			GraphLimitedSearch graphLimitedSearch = new GraphLimitedSearch(nodesLimit);
+			Search search = new AStarSearch(graphLimitedSearch,
+					new SudokuBiggerConstraintHeuristicFunction(heuristicNbr));
 			SearchAgent agent = new SearchAgent(problem, search);
 			if(printActions) printActions(agent.getActions());
-			if(printInstrumentation) printInstrumentation(agent.getInstrumentation());
-			//System.out.println("Search Outcome=" + search.getOutcome());
-			//if(printGoalState) System.out.println("Final State=\n" + search.getLastSearchState());
+			printInstrumentation(agent.getInstrumentation());
+			System.out.println("Search Outcome : " + graphLimitedSearch.getOutcome());
+			if(printFinalState) System.out.print("Final State : \n" + graphLimitedSearch.getLastSearchState());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
