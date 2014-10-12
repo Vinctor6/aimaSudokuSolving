@@ -12,21 +12,35 @@ import aima.core.search.framework.NodeExpander;
 import aima.core.search.framework.Problem;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchUtils;
+import aima.core.search.framework.GraphLimitedSearch.SearchOutcome;
 import aima.core.util.datastructure.XYLocation;
 
 public class DepthFirstSiblingCutSearch extends NodeExpander implements Search {
+	public enum SearchOutcome {
+		FAILURE, SOLUTION_FOUND
+	};
+	private SearchOutcome outcome = SearchOutcome.FAILURE;
 	private static String PATH_COST = "pathCost";
 	private static List<Action> cutoffResult = null;
 	private final int limit;
-	private int cpt;
+	private int expanded;
+	private Object lastState = null;
 	private boolean isStuck;
 	private XYLocation stuckLoc;
 
 	public DepthFirstSiblingCutSearch(int limit) {
 		this.limit = limit;
-		this.cpt = 0;
+		this.expanded = 0;
 	}
 
+	public SearchOutcome getOutcome() {
+		return this.outcome;
+	}
+	
+	public Object getLastSearchState() {
+		return this.lastState;
+	}
+	
 	/**
 	 * Returns <code>true</code> if the specified action list indicates a search
 	 * reached it limit without finding a goal.
@@ -115,13 +129,15 @@ public class DepthFirstSiblingCutSearch extends NodeExpander implements Search {
 	// function RECURSIVE-DLS(node, problem) returns a solution, or
 	// failure/cutoff
 	private List<Action> recursiveDLS(Node node, Problem problem) {
+		this.lastState = node.getState();
 		//If we found the goal state
-		if (SearchUtils.isGoalState(problem, node)) { 	
+		if (SearchUtils.isGoalState(problem, node)) { 
+			this.outcome = SearchOutcome.SOLUTION_FOUND;
 			setPathCost(node.getPathCost());
 			return SearchUtils.actionsFromNodes(node.getPathFromRoot());
 		}
 		//If we are at the limit of nodes
-		else if (this.cpt >= this.limit) { 			
+		else if (this.expanded >= this.limit) { 			
 			return cutoff();
 		}
 		//Else : evaluate the children of node
@@ -132,7 +148,7 @@ public class DepthFirstSiblingCutSearch extends NodeExpander implements Search {
 				if(isStuck && state.getLocFilled() != stuckLoc) return failure(); 
 				//else, if we were stuck but will try with another value at this location, give it a new chance
 				else if(isStuck && state.getLocFilled() == stuckLoc) isStuck = false;
-				(this.cpt)++; //increase number of nodes generated
+				(this.expanded)++; //increase number of nodes generated
 				List<Action> result = recursiveDLS(child, problem); //generate actions from node
 				if (isCutOff(result)) return cutoff();				//stop if we touched the limit already
 				else if (!isFailure(result)) {
