@@ -54,7 +54,7 @@ public class SudokuDemo {
 		for(int i=0; i < sudokus.size(); i++)
 		{
 			SudokuBoard board = sudokus.get(i);
-			System.out.println("\nSudoku "+(i+1)+" :");
+			System.out.println("\n  <-- Sudoku "+(i+1)+" -->");
 				if(printInitState) System.out.print(board);
 			
 			switch(algoNbr){
@@ -136,8 +136,8 @@ public class SudokuDemo {
 		try{
 			String line = "";
 			System.out.println("What algorithm would you like to use (default: execute all): ");
-			System.out.println("1 for Depth First Search \n2 for Depth First Search with improvement on siblings\n"
-					+ "3 for Hill Climbing\n4 for Best first with heursitic 1\n5 for Best first with heuristic 2");
+			System.out.println("1- Depth First Search \n2- Depth First Search with siblings ut\n"
+					+ "3- Hill Climbing\n4- Best first, heuristic 1\n5- Best first, heuristic 2");
 			line = keyboard.readLine();
 			if (!line.equals("")) {
 				SudokuDemo.algoNbr = Integer.parseInt(line);
@@ -149,9 +149,9 @@ public class SudokuDemo {
 				SudokuDemo.nodesLimit = Integer.parseInt(line);
 				line = "";
 			}
-			System.out.println("What display would you use (default: print first state and final state):");
-			System.out.println("1 for all states printing \n2 for initial state and final state + actions\n3 for all states + actions\n"+
-								"4 for only instrumentation");
+			System.out.println("What display would you like (default: First state, Final state, and Instrumentations):");
+			System.out.println("1- add All States \n2- add Actions \n3- add All States and Actions \n"+
+								"4- only Instrumentations");
 			line = keyboard.readLine();
 			int print = 0;
 			if (!line.equals("")) print = Integer.parseInt(line);
@@ -178,17 +178,19 @@ public class SudokuDemo {
 				default:
 					SudokuDemo.printInitState = true;
 					SudokuDemo.printGoalState = true;
+					SudokuDemo.printInstrumentation = true;
 			}
 		}catch(IOException e){
-			System.out.println("Erreur lors de la lecture d'un des param�tres de configuration");
+			System.out.println("Erreur lors de la lecture d'un des paramètres de configuration");
 			e.printStackTrace();
 		}
 	}
 	
 	
 	 /** 
-     * Initialize the file ouput for writing statictics data
-     * Statistics file will only contains the number of nodes expanded for the algorithm choosen
+     * Initialize the file ouput for writing statistics data
+     * Statistics file will ot
+					SudokuDemo.printInstrumentation = true;nly contains the number of nodes expanded for the algorithm choosen
      *  
      */  	
 	private static void initializeStatsOuptutFile(){
@@ -237,7 +239,7 @@ public class SudokuDemo {
 	}
 	
 	private static void sudokuDFSDemo(SudokuBoard initialBoard) {
-		System.out.println("SudokuDemo Depth First Search -->");
+		System.out.println("\n> Depth First Search");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
@@ -264,7 +266,7 @@ public class SudokuDemo {
 	}
 	
 	private static void sudokuDepthFirstSiblingCutDemo(SudokuBoard initialBoard) {
-		System.out.println("\nSudokuDemo N -->");
+		System.out.println("\n> Depth First Search (Sibling Cut)");
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
@@ -282,7 +284,7 @@ public class SudokuDemo {
 	}
 
 	private static void sudokuHCDemo(SudokuBoard initialBoard) {
-		System.out.println("\nSudokuDemo HillClimbing  -->");
+		System.out.println("\n> HillClimbing");
 		initialBoard.fillWithRandomValues();
 		try {
 			Problem problem = new Problem(new SudokuBoard(initialBoard),
@@ -311,7 +313,7 @@ public class SudokuDemo {
 	}
 
 	private static void sudokuBestFirstDemo(SudokuBoard initialBoard, int heuristicNbr) {
-		System.out.println("\nSudokuDemo BestFirst - Heuristic number "+heuristicNbr+" -->");
+		System.out.println("\n> BestFirst - Heuristic number "+heuristicNbr);
 		try {
 			Problem problem = new Problem(initialBoard,
 					SudokuFunctionFactory.getActionsFunction(),
